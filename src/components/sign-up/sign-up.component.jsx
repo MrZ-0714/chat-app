@@ -14,9 +14,11 @@ class SignUp extends React.Component {
       password: "",
       confirmPassword: "",
     };
+
+    this.handleChange = this.handleChange.bind(this);
   }
-/*global handleChange*/
-  handleChange = (event) => {
+
+  handleChange  (event)  {
     const { name, value } = event.target;
     this.setState({ [name]: value });
   };
