@@ -3,6 +3,7 @@ import "./landing.styles.scss";
 import { Link } from "react-router-dom";
 
 import CustomButton from "../../components/custom-button/custom-button.component";
+import { auth } from "../../firebase/firebase.utils";
 
 const LandingPage = () => (
   <div className="landing-page">
@@ -13,6 +14,9 @@ const LandingPage = () => (
     <Link to="/signup">
       <CustomButton>Sign Up</CustomButton>
     </Link>
+    <CustomButton onclick={() => auth.signOut()}>
+      SIGN OUT
+    </CustomButton>
   </div>
 );
 

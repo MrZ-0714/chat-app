@@ -1,12 +1,19 @@
+//packages
 import React from "react";
 import "./sign-up.styles.scss";
-
+// import { Redirect } from "react-router-dom";
+//components
 import FormInput from "../form-input/form-input.component";
 import CustomButton from "../custom-button/custom-button.component";
+// import ChatPage from "../../pages/chat/chat.page";
+//firebase
 import {
   createUserWithEmailAndPassword,
   createUserProfileDocument,
 } from "../../firebase/firebase.utils";
+//redux
+import { connect } from "react-redux";
+import { setCurrentUserAction } from "../../redux/user/user.action";
 
 class SignUp extends React.Component {
   constructor() {
@@ -31,12 +38,16 @@ class SignUp extends React.Component {
   async handleSubmit(event) {
     event.preventDefault();
     const { displayName, email, password, confirmPassword } = this.state;
+    const { setCurrentUserProps } = this.props;
+    
     if (password !== confirmPassword) {
       alert("Passwords does not match, please check and confirm");
       return;
     }
     const user = await createUserWithEmailAndPassword(email, password);
     await createUserProfileDocument(user, { displayName });
+
+    setCurrentUserProps(user);
   }
 
   render() {
@@ -86,4 +97,8 @@ class SignUp extends React.Component {
   }
 }
 
-export default SignUp;
+const mapDispatchToProps = (dispatch) => ({
+  setCurrentUserProps: (user) => dispatch(setCurrentUserAction(user)),
+});
+
+export default connect(null, mapDispatchToProps)(SignUp);

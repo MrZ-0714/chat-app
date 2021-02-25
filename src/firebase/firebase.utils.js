@@ -20,8 +20,7 @@ export const createUserWithEmailAndPassword = (email, password) =>
     .createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
       // Signed in
-      var user = userCredential.user;
-      return user;
+      return userCredential.user;
       // ...
     })
     .catch((error) => {
@@ -62,9 +61,7 @@ export const signInWithEmailAndPassword = (email, password) =>
     .signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
       // Signed in
-      var user = userCredential.user;
-      // console.log(user);
-      return user;
+      return userCredential.user;
       // ...
     })
     .catch((error) => {

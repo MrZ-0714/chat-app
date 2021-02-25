@@ -7,6 +7,10 @@ import SignUp from "./components/sign-up/sign-up.component";
 import SignIn from "./components/sign-in/sign-in.component";
 import ChatPage from "./pages/chat/chat.page";
 
+import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
+import { selectCurrentUser } from "./redux/user/user.selectors";
+
 class App extends React.Component {
   render() {
     return (
@@ -16,7 +20,13 @@ class App extends React.Component {
             <Route exact path="/" component={LandingPage} />
             <Route exact path="/signin" component={SignIn} />
             <Route exact path="/signup" component={SignUp} />
-            <Route exact path="/chat" component={ChatPage} />
+            <Route
+              exact
+              path="/chat"
+              render={() =>
+                this.props.currentUser ? <ChatPage /> : <SignIn />
+              }
+            />
           </Switch>
         </header>
       </div>
@@ -24,4 +34,8 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
+});
+
+export default connect(mapStateToProps)(App);
