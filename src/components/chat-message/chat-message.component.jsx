@@ -1,14 +1,14 @@
 import React from "react";
 import "./chat-message.styles.scss";
 
-const ChatMessage = ({ props }) => {
-  const { message, uId, uImgURL } = props;
+const ChatMessage = ({ message, uId, uImgURL }) => {
   const userId = "sample";
   const msgType = uId === userId ? "sent" : "received";
 
+  console.log({message});
   return (
-    <div>
-      <p class={`message ${msgType}`}>{message}</p>
+    <div className="chat-message">
+      <p className={`message ${msgType}`}>{message}</p>
       <img src={uImgURL} alt="userImage" />
     </div>
   );

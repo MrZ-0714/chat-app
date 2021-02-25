@@ -2,8 +2,21 @@ const chatMessages = [
   {
     id: 1,
     message: "test message 1",
-    uImgURL: "as"
-  }
-]
+    uImgURL: "https://i.ibb.co/GCCdy8t/womens.png",
+    uId: "sample1",
+  },
+  {
+    id: 2,
+    message: "test message 2",
+    uImgURL: "https://i.ibb.co/GCCdy8t/womens.png",
+    uId: "sample2",
+  },
+  {
+    id: 3,
+    message: "test message 3",
+    uImgURL: "https://i.ibb.co/GCCdy8t/womens.png",
+    uId: "sample",
+  },
+];
 
-export default chatMessages
+export default chatMessages;

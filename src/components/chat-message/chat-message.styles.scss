@@ -1,0 +1,22 @@
+.chat-message {
+  background-color: black;
+  width: 50%;
+
+  .message {
+    width: 100%;
+
+    &.sent {
+      background-color: yellowgreen;
+    }
+
+    &.received {
+      background-color: blueviolet;
+    }
+  }
+
+  img {
+    position: relative;
+    width: 30%;
+    height: 100%;
+  }
+}
