@@ -3,8 +3,11 @@ import React from "react";
 import "./sign-in.styles.scss";
 import FormInput from "../form-input/form-input.component";
 import CustomButton from "../custom-button/custom-button.component";
-
+//firebase
 import { signInWithEmailAndPassword } from "../../firebase/firebase.utils";
+//redux
+import { connect } from "react-redux";
+import { setCurrentUserAction } from "../../redux/user/user.action";
 
 class SignIn extends React.Component {
   constructor(props) {
@@ -26,11 +29,15 @@ class SignIn extends React.Component {
   }
 
   handleSubmit(event) {
-    event.preventDefault();
     const { email, password } = this.state;
+    const { setCurrentUser } = this.props;
+
+    event.preventDefault();
     signInWithEmailAndPassword(email, password).then((user) => {
-      this.setState({ user: user });
+      setCurrentUser(user);
     });
+
+    this.props.history.push("/chat");
   }
 
   render() {
@@ -67,4 +74,8 @@ class SignIn extends React.Component {
   }
 }
 
-export default SignIn;
+const mapDispatchToProps = (dispatch) => ({
+  setCurrentUser: (user) => dispatch(setCurrentUserAction(user)),
+});
+
+export default connect(null, mapDispatchToProps)(SignIn);

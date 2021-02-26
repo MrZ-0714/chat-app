@@ -69,3 +69,5 @@ export const signInWithEmailAndPassword = (email, password) =>
       var errorMessage = error.message;
       console.log(errorCode + " : " + errorMessage);
     });
+
+export const signOutCurrentUser = () => auth.signOut();

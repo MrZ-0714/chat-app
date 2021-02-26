@@ -2,6 +2,7 @@ import React from "react";
 import "./App.css";
 import { Switch, Route } from "react-router-dom";
 
+import Header from "./components/header/header.component";
 import LandingPage from "./pages/landing/landing.page";
 import SignUp from "./components/sign-up/sign-up.component";
 import SignIn from "./components/sign-in/sign-in.component";
@@ -16,6 +17,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <header className="App-header">
+          <Header />
           <Switch>
             <Route exact path="/" component={LandingPage} />
             <Route exact path="/signin" component={SignIn} />
