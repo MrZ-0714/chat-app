@@ -19,9 +19,27 @@ class App extends React.Component {
         <header className="App-header">
           <Header />
           <Switch>
-            <Route exact path="/" component={LandingPage} />
-            <Route exact path="/signin" component={SignIn} />
-            <Route exact path="/signup" component={SignUp} />
+            <Route
+              exact
+              path="/"
+              render={() =>
+                this.props.currentUser ? <ChatPage /> : <LandingPage />
+              }
+            />
+            <Route
+              exact
+              path="/signin"
+              render={() =>
+                this.props.currentUser ? <ChatPage /> : <SignIn />
+              }
+            />
+            <Route
+              exact
+              path="/signup"
+              render={() =>
+                this.props.currentUser ? <ChatPage /> : <SignUp />
+              }
+            />
             <Route
               exact
               path="/chat"
