@@ -48,7 +48,17 @@ class SignUp extends React.Component {
     await createUserProfileDocument(user, { displayName });
 
     setCurrentUser(user);
-    this.props.history.push('/chat');
+    if (user) {
+      this.props.history.push("/chat");
+    } else {
+      this.setState({
+        displayName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+      alert("There is something wrond with the registration, try again.");
+    }
   }
 
   render() {
