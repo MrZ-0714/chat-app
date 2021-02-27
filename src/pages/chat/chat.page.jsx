@@ -16,11 +16,30 @@ class ChatPage extends React.Component {
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange(event) {
     const { name, value } = event.target;
     this.setState({ [name]: value });
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    const { chatMessages, newMessage } = this.state;
+    const newMessageToAdd = {
+      id: 4,
+      message: newMessage,
+      uImgURL: "https://i.ibb.co/GCCdy8t/womens.png",
+      uId: "user1",
+    };
+    console.log(chatMessages);
+
+    this.setState({
+      newMessage: "",
+      chatMessages: [...chatMessages, newMessageToAdd],
+    });
+    console.log(this.state.chatMessages);
   }
 
   render() {
@@ -32,7 +51,7 @@ class ChatPage extends React.Component {
         {chatMessages.map(({ id, ...otherProps }) => (
           <ChatMessage key={id} {...otherProps} />
         ))}
-        <form>
+        <form onSubmit={this.handleSubmit}>
           <FormInput
             type="text"
             name="newMessage"
@@ -41,7 +60,7 @@ class ChatPage extends React.Component {
             label="New Message"
             required
           />
-          <CustomButton> Send </CustomButton>
+          <CustomButton type="submit"> Send </CustomButton>
         </form>
       </div>
     );
