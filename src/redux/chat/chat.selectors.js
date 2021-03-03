@@ -1,8 +1,8 @@
 import { createSelector } from "reselect";
 
-const selectMessages = (state) => state.newMessage;
+const selectMessages = (state) => state.chatMessages;
 
-export const selectLast15Messages = createSelector(
+export const selectChatMessages = createSelector(
   [selectMessages],
-  (newMessage) => newMessage.newMessage
+  (chatMessages) => chatMessages.chatMessages
 );

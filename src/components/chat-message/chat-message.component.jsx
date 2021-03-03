@@ -1,8 +1,12 @@
 import React from "react";
 import "./chat-message.styles.scss";
 
-const ChatMessage = ({ message, uId, uImgURL }) => {
-  const userId = "user1";
+import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
+import { selectCurrentUser } from "../../redux/user/user.selectors";
+
+const ChatMessage = ({ message, uId, uImgURL, currentUser }) => {
+  const userId = currentUser.uid;
   const msgType = uId === userId ? "sent" : "received";
 
   console.log("ChatMessage Component re-rendered.");
@@ -14,4 +18,8 @@ const ChatMessage = ({ message, uId, uImgURL }) => {
   );
 };
 
-export default ChatMessage;
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
+});
+
+export default connect(mapStateToProps)(ChatMessage);

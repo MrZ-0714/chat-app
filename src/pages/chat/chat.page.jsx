@@ -4,7 +4,12 @@ import "./chat.styles.scss";
 import CustomButton from "../../components/custom-button/custom-button.component";
 import FormInput from "../../components/form-input/form-input.component";
 import ChatMessage from "../../components/chat-message/chat-message.component";
-import chatMessages from "./chat.mock-data";
+
+import { connect } from "react-redux";
+import { sendNewMessageAction } from "../../redux/chat/chat.action";
+import { createStructuredSelector } from "reselect";
+import { selectChatMessages } from "../../redux/chat/chat.selectors";
+import { selectCurrentUser } from "../../redux/user/user.selectors";
 
 class ChatPage extends React.Component {
   constructor() {
@@ -12,7 +17,6 @@ class ChatPage extends React.Component {
 
     this.state = {
       newMessage: "",
-      chatMessages: chatMessages,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -26,29 +30,26 @@ class ChatPage extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const { chatMessages, newMessage } = this.state;
+    const { sendNewMessageProp, currentUser } = this.props;
+    const { newMessage } = this.state;
+
     const newMessageToAdd = {
-      id: 4,
+      id: 6,
       message: newMessage,
       uImgURL: "https://i.ibb.co/GCCdy8t/womens.png",
-      uId: "user1",
+      uId: currentUser.uid,
     };
-    console.log(chatMessages);
-
-    this.setState({
-      newMessage: "",
-      chatMessages: [...chatMessages, newMessageToAdd],
-    });
-    console.log(this.state.chatMessages);
+    sendNewMessageProp(newMessageToAdd);
+    console.log(currentUser);
   }
 
   render() {
-    const { newMessage, chatMessages } = this.state;
-
+    const { newMessage } = this.state;
+    const { chatMessagesProp } = this.props;
     return (
       <div className="landing-page">
         <h1>Chat</h1>
-        {chatMessages.map(({ id, ...otherProps }) => (
+        {chatMessagesProp.map(({ id, ...otherProps }) => (
           <ChatMessage key={id} {...otherProps} />
         ))}
         <form onSubmit={this.handleSubmit}>
@@ -67,4 +68,14 @@ class ChatPage extends React.Component {
   }
 }
 
-export default ChatPage;
+const mapDispatchToProps = (dispatch) => ({
+  sendNewMessageProp: (newMessage) =>
+    dispatch(sendNewMessageAction(newMessage)),
+});
+
+const mapStateToProps = createStructuredSelector({
+  chatMessagesProp: selectChatMessages,
+  currentUser: selectCurrentUser,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChatPage);
