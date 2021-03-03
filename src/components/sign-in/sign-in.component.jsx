@@ -28,15 +28,15 @@ class SignIn extends React.Component {
     });
   }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
     const { email, password } = this.state;
     const { setCurrentUser } = this.props;
 
     event.preventDefault();
+
     signInWithEmailAndPassword(email, password).then((user) => {
       setCurrentUser(user);
     });
-
     this.props.history.push("/chat");
   }
 

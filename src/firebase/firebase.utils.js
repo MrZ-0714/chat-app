@@ -38,12 +38,11 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   const snapShot = await userRef.get();
 
   if (!snapShot.exists) {
-    const { displayName, email } = userAuth;
+    const { email } = userAuth;
     const createdAt = new Date();
 
     try {
       await userRef.set({
-        displayName,
         email,
         createdAt,
         ...additionalData,
@@ -71,3 +70,31 @@ export const signInWithEmailAndPassword = (email, password) =>
     });
 
 export const signOutCurrentUser = () => auth.signOut();
+
+export const saveChatMessageToFirebase = async (
+  currentUser,
+  chatMessageToAdd
+) => {
+  if (!currentUser) {
+    alert("Login first to chat");
+    return;
+  }
+
+  const chatRef = firestore.doc(`chatMessages/${currentUser.uid}`);
+  const snapShot = await chatRef.get();
+
+  if (!snapShot.exists) {
+    const createdAt = new Date();
+
+    try {
+      await chatRef.set({
+        createdAt,
+        ...chatMessageToAdd,
+      });
+    } catch (err) {
+      console.log("Error save chat: " + err.message);
+    }
+  }
+
+  return 0;
+};

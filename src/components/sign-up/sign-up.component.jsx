@@ -57,7 +57,7 @@ class SignUp extends React.Component {
         password: "",
         confirmPassword: "",
       });
-      alert("There is something wrond with the registration, try again.");
+      alert("There is something wrong with the registration, try again.");
     }
   }
 

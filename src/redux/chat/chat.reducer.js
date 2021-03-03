@@ -1,6 +1,7 @@
 import { ChatActionTypes } from "./chat.action.types";
-import chatMessagesData from "./zdata.chat.mock-data";
 import { addNewChatMessages } from "./chat.utils";
+
+import chatMessagesData from "./zdata.chat.mock-data";
 
 const INITIAL_STATE = {
   newMessage: null,

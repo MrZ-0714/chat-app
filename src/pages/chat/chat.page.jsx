@@ -5,6 +5,8 @@ import CustomButton from "../../components/custom-button/custom-button.component
 import FormInput from "../../components/form-input/form-input.component";
 import ChatMessage from "../../components/chat-message/chat-message.component";
 
+import { saveChatMessageToFirebase } from "../../firebase/firebase.utils";
+
 import { connect } from "react-redux";
 import { sendNewMessageAction } from "../../redux/chat/chat.action";
 import { createStructuredSelector } from "reselect";
@@ -40,12 +42,18 @@ class ChatPage extends React.Component {
       uId: currentUser.uid,
     };
     sendNewMessageProp(newMessageToAdd);
-    console.log(currentUser);
+    saveChatMessageToFirebase(currentUser, newMessageToAdd).then((res) => {
+      if (res !== 0) {
+        alert("Message not saved to DB");
+      }
+    });
+    this.setState({ newMessage: "" });
   }
 
   render() {
     const { newMessage } = this.state;
     const { chatMessagesProp } = this.props;
+
     return (
       <div className="landing-page">
         <h1>Chat</h1>
