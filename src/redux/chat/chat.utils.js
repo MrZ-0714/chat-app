@@ -1,3 +1,3 @@
-export const addNewChatMessages = (currentChatMessages, chatMessagesToAdd) => {
-  return [...currentChatMessages, { chatMessagesToAdd }];
+export const addNewChatMessages = (currentChatMessages, chatMessageToAdd) => {
+  return [...currentChatMessages,  ...chatMessageToAdd ];
 };

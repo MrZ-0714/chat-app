@@ -1,5 +1,6 @@
 import { ChatActionTypes } from "./chat.action.types";
 import chatMessagesData from "./zdata.chat.mock-data";
+import { addNewChatMessages } from "./chat.utils";
 
 const INITIAL_STATE = {
   newMessage: null,
@@ -9,10 +10,9 @@ const INITIAL_STATE = {
 const chatReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case ChatActionTypes.SEND_NEW_MESSAGE:
-      
       return {
         ...state,
-        chatMessages: [...state.chatMessages, action.payload],
+        chatMessages: addNewChatMessages(state.chatMessages, action.payload),
       };
     //No state update when no action registered.
     default:
