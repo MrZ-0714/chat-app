@@ -71,30 +71,26 @@ export const signInWithEmailAndPassword = (email, password) =>
 
 export const signOutCurrentUser = () => auth.signOut();
 
-export const saveChatMessageToFirebase = async (
-  currentUser,
-  chatMessageToAdd
-) => {
+export const saveChatMessageToFirebase = (currentUser, chatMessageToAdd) => {
   if (!currentUser) {
     alert("Login first to chat");
     return;
   }
+  const createdAt = new Date();
 
-  const chatRef = firestore.doc(`chatMessages/${currentUser.uid}`);
-  const snapShot = await chatRef.get();
-
-  if (!snapShot.exists) {
-    const createdAt = new Date();
-
-    try {
-      await chatRef.set({
-        createdAt,
-        ...chatMessageToAdd,
-      });
-    } catch (err) {
-      console.log("Error save chat: " + err.message);
-    }
-  }
-
-  return 0;
+  firestore
+    .collection("chatMessages")
+    .add({
+      createdAt,
+      ...chatMessageToAdd,
+    })
+    .then((docRef) => {
+      console.log("Document written with ID: ", docRef.id);
+      return 0;
+    })
+    .catch((error) => {
+      alert("Error adding chat message: " + chatMessageToAdd.message);
+      console.error("Error adding document: ", error);
+      return 1;
+    });
 };

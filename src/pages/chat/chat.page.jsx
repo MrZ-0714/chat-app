@@ -42,11 +42,7 @@ class ChatPage extends React.Component {
       uId: currentUser.uid,
     };
     sendNewMessageProp(newMessageToAdd);
-    saveChatMessageToFirebase(currentUser, newMessageToAdd).then((res) => {
-      if (res !== 0) {
-        alert("Message not saved to DB");
-      }
-    });
+    saveChatMessageToFirebase(currentUser, newMessageToAdd);
     this.setState({ newMessage: "" });
   }
 
