@@ -94,3 +94,13 @@ export const saveChatMessageToFirebase = (currentUser, chatMessageToAdd) => {
       return 1;
     });
 };
+
+export const getChatCollectionData = (cf) =>
+  firestore.collection("chatMessages").onSnapshot((querySnapshot) => {
+    const chatData = [];
+    querySnapshot.forEach((doc) => {
+      chatData.push({ mId: doc.id, ...doc.data() });
+    });
+    console.log(chatData);
+    cf(chatData);
+  });
