@@ -35,7 +35,7 @@ class ChatPage extends React.Component {
   componentDidMount() {
     //fetch data from firebase
     getChatCollectionData((chatData) =>
-      this.setState({ chatMessages: chatData })
+      this.setState({ chatMessages: chatData }), 15
     );
   }
 

@@ -11,7 +11,7 @@ const ChatMessage = ({ message, uId, uImgURL, currentUser }) => {
 
   console.log("ChatMessage Component re-rendered.");
   return (
-    <div className="chat-message">
+    <div className={`chat-message ${msgType}`}>
       <p className={`message ${msgType}`}>{message}</p>
       <img src={uImgURL} alt="userImage" />
     </div>

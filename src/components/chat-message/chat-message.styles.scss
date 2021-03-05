@@ -1,16 +1,30 @@
 .chat-message {
   background-color: black;
   width: 50%;
+  display: flex;
+
+  &.sent {
+    margin-left: auto;
+    margin-right: 1rem;
+  }
+
+  &.received {
+    margin-left: 1rem;
+    margin-right: auto;
+  }
 
   .message {
     width: 100%;
 
     &.sent {
       background-color: yellowgreen;
+      text-align: right;
     }
 
     &.received {
       background-color: blueviolet;
+      text-align: left;
+      order: 2;
     }
   }
 
