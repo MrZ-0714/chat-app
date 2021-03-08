@@ -74,14 +74,16 @@ class ChatPage extends React.Component {
     const { newMessage, chatMessages } = this.state;
     console.log("I am rendering");
     return (
-      <div className="landing-page">
+      <div className="chat-page">
         <h1>Chat</h1>
-        <span onClick={this.showMoreMessages}> show previous messages </span>
+        <p className="show-more" onClick={this.showMoreMessages}> show previous messages </p>
         {chatMessages.map(({ mId, ...otherProps }) => (
           <ChatMessage key={mId} {...otherProps} />
         ))}
-        <form onSubmit={this.handleSubmit}>
+        <div className="anchor"></div>
+        <form className="send-newMessage-form" onSubmit={this.handleSubmit}>
           <FormInput
+            className="send-newMessage-input"
             type="text"
             name="newMessage"
             value={newMessage}
@@ -89,7 +91,7 @@ class ChatPage extends React.Component {
             label="New Message"
             required
           />
-          <CustomButton type="submit"> Send </CustomButton>
+          <CustomButton className="send-newMessage-button" type="submit"> Send </CustomButton>
         </form>
       </div>
     );

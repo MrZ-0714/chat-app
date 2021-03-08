@@ -100,7 +100,7 @@ export const getChatCollectionData = (callbackFn, numberOfMessages) => {
   const chatMessagesToRetrive = chatMessagesRef
     .orderBy("createdAt", "desc")
     .limit(numberOfMessages);
-  console.log(chatMessagesToRetrive);
+
   chatMessagesToRetrive.onSnapshot((querySnapshot) => {
     const chatData = [];
     console.log(querySnapshot.JSON);

@@ -1,0 +1,29 @@
+.chat-page {
+  min-width: 300px;
+  max-width: 1000px;
+
+  .show-more{
+    margin: 0px 0px 30px;
+  }
+
+  .send-newMessage-form {
+    display: flex;
+    width: 100%;
+    margin: 15px auto;
+    display: flex;
+
+    .send-newMessage-input{
+      margin: 0 auto;
+      height: 30px;
+    }
+
+    .send-newMessage-button {
+      margin-left: auto;
+      margin-right: 10rem;
+      float: right;
+      height: 30px;;
+    }
+  }
+
+
+}

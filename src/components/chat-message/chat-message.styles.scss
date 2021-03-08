@@ -1,7 +1,9 @@
 .chat-message {
-  background-color: black;
-  width: 50%;
+  background-color: transparent;
+  width: fit-content;
+  max-width: 50%;
   display: flex;
+  margin-bottom: 5px;
 
   &.sent {
     margin-left: auto;
@@ -15,22 +17,28 @@
 
   .message {
     width: 100%;
+    margin: 0px 0px auto;
+    padding: 3px 5px 5px;
 
     &.sent {
       background-color: yellowgreen;
-      text-align: right;
+      text-align: left;
+      display: inline-block;
     }
 
     &.received {
       background-color: blueviolet;
       text-align: left;
       order: 2;
+      display: inline-block;
     }
   }
 
   img {
-    position: relative;
-    width: 30%;
+    // position: relative;
+    width: 45px;
     height: 100%;
+    border-radius: 50%;
+    margin: 5px 5px;
   }
 }

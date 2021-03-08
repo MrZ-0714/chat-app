@@ -15,7 +15,7 @@ import { selectCurrentUser } from "./redux/user/user.selectors";
 class App extends React.Component {
   render() {
     const { currentUser } = this.props;
-    
+
     return (
       <div className="App">
         <header className="App-header">
@@ -40,6 +40,11 @@ class App extends React.Component {
               exact
               path="/chat"
               render={() => (currentUser ? <ChatPage /> : <SignIn />)}
+            />
+            <Route
+              exact
+              path="/signintest"
+              render={() => <SignIn />}
             />
           </Switch>
         </header>
