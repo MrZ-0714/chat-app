@@ -21,10 +21,23 @@ class ChatPage extends React.Component {
     this.state = {
       newMessage: "",
       chatMessages: [],
+      messageCount: 15,
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.showMoreMessages = this.showMoreMessages.bind(this);
+  }
+
+  showMoreMessages() {
+    const { messageCount } = this.state;
+    console.log(messageCount);
+    this.setState({ messageCount: messageCount + 5 });
+
+    getChatCollectionData(
+      (chatData) => this.setState({ chatMessages: chatData }),
+      messageCount
+    );
   }
 
   handleChange(event) {
@@ -34,8 +47,11 @@ class ChatPage extends React.Component {
 
   componentDidMount() {
     //fetch data from firebase
-    getChatCollectionData((chatData) =>
-      this.setState({ chatMessages: chatData }), 15
+    const { messageCount } = this.state;
+
+    getChatCollectionData(
+      (chatData) => this.setState({ chatMessages: chatData }),
+      messageCount
     );
   }
 
@@ -43,11 +59,12 @@ class ChatPage extends React.Component {
     event.preventDefault();
     const { currentUser } = this.props;
     const { newMessage } = this.state;
+    const userId = currentUser.uid;
 
     const newMessageToAdd = {
       message: newMessage,
-      uImgURL: "https://i.ibb.co/GCCdy8t/womens.png",
-      uId: currentUser.uid,
+      uImgURL: `https://avatars.dicebear.com/api/avataaars/${userId}.svg?mouth[]=smile`,
+      uId: userId,
     };
     saveChatMessageToFirebase(currentUser, newMessageToAdd);
     this.setState({ newMessage: "" });
@@ -59,6 +76,7 @@ class ChatPage extends React.Component {
     return (
       <div className="landing-page">
         <h1>Chat</h1>
+        <span onClick={this.showMoreMessages}> show previous messages </span>
         {chatMessages.map(({ mId, ...otherProps }) => (
           <ChatMessage key={mId} {...otherProps} />
         ))}

@@ -95,14 +95,15 @@ export const saveChatMessageToFirebase = (currentUser, chatMessageToAdd) => {
     });
 };
 
-export const getChatCollectionData = (cf, n) => {
+export const getChatCollectionData = (callbackFn, numberOfMessages) => {
   const chatMessagesRef = firestore.collection("chatMessages");
   const chatMessagesToRetrive = chatMessagesRef
     .orderBy("createdAt", "desc")
-    .limit(n);
-
+    .limit(numberOfMessages);
+  console.log(chatMessagesToRetrive);
   chatMessagesToRetrive.onSnapshot((querySnapshot) => {
     const chatData = [];
+    console.log(querySnapshot.JSON);
     querySnapshot.forEach((doc) => {
       chatData.push({ mId: doc.id, ...doc.data() });
     });
@@ -111,6 +112,6 @@ export const getChatCollectionData = (cf, n) => {
         return a.createdAt - b.createdAt;
       })
     );
-    cf(chatData);
+    callbackFn(chatData);
   });
 };
