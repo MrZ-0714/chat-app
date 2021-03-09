@@ -15,7 +15,11 @@ firebase.initializeApp(firebaseConfig);
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
-export const createUserWithEmailAndPassword = (email, password, displayName) =>
+export const createUserWithEmailAndPassword = async (
+  email,
+  password,
+  displayName
+) =>
   auth
     .createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
@@ -26,6 +30,14 @@ export const createUserWithEmailAndPassword = (email, password, displayName) =>
         })
         .then(() => console.log("Display name updated to: " + displayName))
         .catch((e) => console.log("Error update user profile: " + e));
+      // Send email verification
+      auth.onAuthStateChanged((user) =>
+        user
+          .sendEmailVerification()
+          .then(() => console.log("Email verification sent"))
+          .catch((e) => console.log("error sending email verification: " + e))
+      );
+
       console.log(auth.currentUser.uid);
       return userCredential.user;
     })
@@ -56,8 +68,6 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
       console.log("Error creating user" + err.message);
     }
   }
-
-  return userRef;
 };
 
 export const signInWithEmailAndPassword = (email, password) =>
@@ -65,6 +75,9 @@ export const signInWithEmailAndPassword = (email, password) =>
     .signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
       // Signed in
+      if (!userCredential.emailVerified) {
+        alert("Please check your inbox or spam and verify your account!");
+      }
       return userCredential.user;
     })
     .catch((error) => {
@@ -101,11 +114,13 @@ export const saveChatMessageToFirebase = (currentUser, chatMessageToAdd) => {
 
 export const getCollectionData = (callbackFn, collectionInfo) => {
   if (collectionInfo.collectionName === "chatMessages") {
+    // Get chat collection
     const chatMessagesRef = firestore.collection(collectionInfo.collectionName);
+    // Get latest 15 chat messages
     const chatMessagesToRetrive = chatMessagesRef
       .orderBy("createdAt", "desc")
       .limit(collectionInfo.messageCount);
-
+    // Set up a listener on last 15 messages
     chatMessagesToRetrive.onSnapshot((querySnapshot) => {
       const chatData = [];
       querySnapshot.forEach((doc) => {
