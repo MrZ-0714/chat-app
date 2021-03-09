@@ -2,28 +2,31 @@
   min-width: 300px;
   max-width: 1000px;
 
-  .show-more{
+  .show-more {
     margin: 0px 0px 30px;
   }
 
-  .send-newMessage-form {
-    display: flex;
-    width: 100%;
-    margin: 15px auto;
-    display: flex;
+  .anchor {
+    padding: 15rem auto;
+  }
+  .send-newMessage-div {
+    .send-newMessage-form {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin: 25px auto 50px auto;
 
-    .send-newMessage-input{
-      margin: 0 auto;
-      height: 30px;
-    }
+      .send-newMessage-input {
+        height: 30px;
+      }
 
-    .send-newMessage-button {
-      margin-left: auto;
-      margin-right: 10rem;
-      float: right;
-      height: 30px;;
+      .send-newMessage-button {
+        -webkit-appearance: none;
+        margin-left: auto;
+        margin-right: 10rem;
+        float: right;
+        height: 30px;
+      }
     }
   }
-
-
 }

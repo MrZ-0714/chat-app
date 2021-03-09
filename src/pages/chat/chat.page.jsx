@@ -81,6 +81,7 @@ class ChatPage extends React.Component {
           <ChatMessage key={mId} {...otherProps} />
         ))}
         <div className="anchor"></div>
+        <div className="send-newMessage-div">
         <form className="send-newMessage-form" onSubmit={this.handleSubmit}>
           <FormInput
             className="send-newMessage-input"
@@ -93,6 +94,7 @@ class ChatPage extends React.Component {
           />
           <CustomButton className="send-newMessage-button" type="submit"> Send </CustomButton>
         </form>
+        </div>
       </div>
     );
   }
