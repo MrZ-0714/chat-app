@@ -7,7 +7,7 @@ import ChatMessage from "../../components/chat-message/chat-message.component";
 
 import {
   saveChatMessageToFirebase,
-  getChatCollectionData,
+  getCollectionData,
 } from "../../firebase/firebase.utils";
 
 import { connect } from "react-redux";
@@ -21,7 +21,10 @@ class ChatPage extends React.Component {
     this.state = {
       newMessage: "",
       chatMessages: [],
-      messageCount: 15,
+      collectionInfo: {
+        collectionName: "chatMessages",
+        messageCount: 15,
+      },
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -30,13 +33,23 @@ class ChatPage extends React.Component {
   }
 
   showMoreMessages() {
-    const { messageCount } = this.state;
-    console.log(messageCount);
-    this.setState({ messageCount: messageCount + 5 });
+    const { collectionInfo } = this.state;
+    console.log(collectionInfo);
 
-    getChatCollectionData(
-      (chatData) => this.setState({ chatMessages: chatData }),
-      messageCount
+    this.setState(
+      {
+        collectionInfo: {
+          collectionName: "chatMessages",
+          messageCount: collectionInfo.messageCount + 5,
+        },
+      },
+      () => {
+        console.log(this.state);
+        getCollectionData(
+          (chatData) => this.setState({ chatMessages: chatData }),
+          collectionInfo
+        );
+      }
     );
   }
 
@@ -47,11 +60,11 @@ class ChatPage extends React.Component {
 
   componentDidMount() {
     //fetch data from firebase
-    const { messageCount } = this.state;
+    const { collectionInfo } = this.state;
 
-    getChatCollectionData(
+    getCollectionData(
       (chatData) => this.setState({ chatMessages: chatData }),
-      messageCount
+      collectionInfo
     );
   }
 
@@ -60,11 +73,13 @@ class ChatPage extends React.Component {
     const { currentUser } = this.props;
     const { newMessage } = this.state;
     const userId = currentUser.uid;
+    const userDisplayName = currentUser.displayName;
 
     const newMessageToAdd = {
       message: newMessage,
       uImgURL: `https://avatars.dicebear.com/api/avataaars/${userId}.svg?mouth[]=smile`,
       uId: userId,
+      uDisplayName: userDisplayName,
     };
     saveChatMessageToFirebase(currentUser, newMessageToAdd);
     this.setState({ newMessage: "" });
@@ -76,24 +91,30 @@ class ChatPage extends React.Component {
     return (
       <div className="chat-page">
         <h1>Chat</h1>
-        <p className="show-more" onClick={this.showMoreMessages}> show previous messages </p>
+        <p className="show-more" onClick={this.showMoreMessages}>
+          {" "}
+          show previous messages{" "}
+        </p>
         {chatMessages.map(({ mId, ...otherProps }) => (
           <ChatMessage key={mId} {...otherProps} />
         ))}
         <div className="anchor"></div>
         <div className="send-newMessage-div">
-        <form className="send-newMessage-form" onSubmit={this.handleSubmit}>
-          <FormInput
-            className="send-newMessage-input"
-            type="text"
-            name="newMessage"
-            value={newMessage}
-            onChange={this.handleChange}
-            label="New Message"
-            required
-          />
-          <CustomButton className="send-newMessage-button" type="submit"> Send </CustomButton>
-        </form>
+          <form className="send-newMessage-form" onSubmit={this.handleSubmit}>
+            <FormInput
+              className="send-newMessage-input"
+              type="text"
+              name="newMessage"
+              value={newMessage}
+              onChange={this.handleChange}
+              label="New Message"
+              required
+            />
+            <CustomButton className="send-newMessage-button" type="submit">
+              {" "}
+              Send{" "}
+            </CustomButton>
+          </form>
         </div>
       </div>
     );

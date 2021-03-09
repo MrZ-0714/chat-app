@@ -15,20 +15,25 @@ firebase.initializeApp(firebaseConfig);
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
-export const createUserWithEmailAndPassword = (email, password) =>
+export const createUserWithEmailAndPassword = (email, password, displayName) =>
   auth
     .createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
       // Signed in
+      auth.currentUser
+        .updateProfile({
+          displayName: displayName,
+        })
+        .then(() => console.log("Display name updated to: " + displayName))
+        .catch((e) => console.log("Error update user profile: " + e));
+      console.log(auth.currentUser.uid);
       return userCredential.user;
-      // ...
     })
     .catch((error) => {
       var errorCode = error.code;
       var errorMessage = error.message;
 
       console.log(errorCode + " : " + errorMessage);
-      // ..
     });
 
 export const createUserProfileDocument = async (userAuth, additionalData) => {
@@ -61,7 +66,6 @@ export const signInWithEmailAndPassword = (email, password) =>
     .then((userCredential) => {
       // Signed in
       return userCredential.user;
-      // ...
     })
     .catch((error) => {
       var errorCode = error.code;
@@ -95,23 +99,24 @@ export const saveChatMessageToFirebase = (currentUser, chatMessageToAdd) => {
     });
 };
 
-export const getChatCollectionData = (callbackFn, numberOfMessages) => {
-  const chatMessagesRef = firestore.collection("chatMessages");
-  const chatMessagesToRetrive = chatMessagesRef
-    .orderBy("createdAt", "desc")
-    .limit(numberOfMessages);
+export const getCollectionData = (callbackFn, collectionInfo) => {
+  if (collectionInfo.collectionName === "chatMessages") {
+    const chatMessagesRef = firestore.collection(collectionInfo.collectionName);
+    const chatMessagesToRetrive = chatMessagesRef
+      .orderBy("createdAt", "desc")
+      .limit(collectionInfo.messageCount);
 
-  chatMessagesToRetrive.onSnapshot((querySnapshot) => {
-    const chatData = [];
-    console.log(querySnapshot.JSON);
-    querySnapshot.forEach((doc) => {
-      chatData.push({ mId: doc.id, ...doc.data() });
+    chatMessagesToRetrive.onSnapshot((querySnapshot) => {
+      const chatData = [];
+      querySnapshot.forEach((doc) => {
+        chatData.push({ mId: doc.id, ...doc.data() });
+      });
+      console.log(
+        chatData.sort((a, b) => {
+          return a.createdAt - b.createdAt;
+        })
+      );
+      callbackFn(chatData);
     });
-    console.log(
-      chatData.sort((a, b) => {
-        return a.createdAt - b.createdAt;
-      })
-    );
-    callbackFn(chatData);
-  });
+  }
 };

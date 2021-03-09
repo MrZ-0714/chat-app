@@ -7,6 +7,7 @@ import CustomButton from "../custom-button/custom-button.component";
 //firebase
 import {
   createUserWithEmailAndPassword,
+  // updateUserProfile,
   createUserProfileDocument,
 } from "../../firebase/firebase.utils";
 //redux
@@ -44,13 +45,11 @@ class SignUp extends React.Component {
       alert("Passwords does not match, please check and confirm");
       return;
     }
-    const user = await createUserWithEmailAndPassword(email, password);
+    const user = await createUserWithEmailAndPassword(email, password, displayName);
     await createUserProfileDocument(user, { displayName });
 
     setCurrentUser(user);
-    if (user) {
-      this.props.history.push("/chat");
-    } else {
+    if (!user) {
       this.setState({
         displayName: "",
         email: "",

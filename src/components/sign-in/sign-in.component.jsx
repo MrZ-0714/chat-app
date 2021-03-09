@@ -36,8 +36,8 @@ class SignIn extends React.Component {
 
     signInWithEmailAndPassword(email, password).then((user) => {
       setCurrentUser(user);
+      console.log(user.uid);
     });
-    this.props.history.push("/chat");
   }
 
   render() {
