@@ -1,6 +1,8 @@
 import React from "react";
 import "./chat.styles.scss";
 
+import Button from "react-bootstrap/Button";
+
 import CustomButton from "../../components/custom-button/custom-button.component";
 import FormInput from "../../components/form-input/form-input.component";
 import ChatMessage from "../../components/chat-message/chat-message.component";
@@ -91,10 +93,14 @@ class ChatPage extends React.Component {
     return (
       <div className="chat-page">
         <h1>Chat</h1>
-        <p className="show-more" onClick={this.showMoreMessages}>
-          {" "}
-          show previous messages{" "}
-        </p>
+        <Button
+          variant="secondary"
+          size="sm"
+          block
+          onClick={this.showMoreMessages}
+        >
+          show previous messages
+        </Button>
         {chatMessages.map(({ mId, ...otherProps }) => (
           <ChatMessage key={mId} {...otherProps} />
         ))}
