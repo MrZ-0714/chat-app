@@ -6,14 +6,13 @@ import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import InputGroup from "react-bootstrap/InputGroup";
 
-import FormInput from "../../components/form-input/form-input.component";
 import ChatMessage from "../../components/chat-message/chat-message.component";
 
 import {
   saveChatMessageToFirebase,
   getCollectionData,
 } from "../../firebase/firebase.utils";
-
+//Redux
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { selectCurrentUser } from "../../redux/user/user.selectors";
