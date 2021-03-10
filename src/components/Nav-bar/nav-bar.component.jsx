@@ -1,18 +1,29 @@
 import React from "react";
 import "./nav-bar.styles.scss";
 
-import { Link } from "react-router-dom";
+// React-bootstrap
+import Nav from "react-bootstrap/Nav";
+import { LinkContainer } from "react-router-bootstrap";
 
 const NavBar = () => {
   return (
-    <div className="nav-bar">
-      <Link className="nav-bar-options" to="/friends">
-        Friends
-      </Link>
-      <Link className="nav-bar-options" to="/me">
-        Me
-      </Link>
-    </div>
+    <Nav variant="pills" fill defaultActiveKey="/friends">
+      <Nav.Item>
+        <LinkContainer to="/friends">
+          <Nav.Link>Friends</Nav.Link>
+        </LinkContainer>
+      </Nav.Item>
+      <Nav.Item>
+        <LinkContainer to="/me">
+          <Nav.Link>Me</Nav.Link>
+        </LinkContainer>
+      </Nav.Item>
+      <Nav.Item>
+        <LinkContainer to="/chat">
+          <Nav.Link>Chat</Nav.Link>
+        </LinkContainer>
+      </Nav.Item>
+    </Nav>
   );
 };
 
