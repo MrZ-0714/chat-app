@@ -2,8 +2,10 @@ import React from "react";
 import "./chat.styles.scss";
 
 import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import FormControl from "react-bootstrap/FormControl";
+import InputGroup from "react-bootstrap/InputGroup";
 
-import CustomButton from "../../components/custom-button/custom-button.component";
 import FormInput from "../../components/form-input/form-input.component";
 import ChatMessage from "../../components/chat-message/chat-message.component";
 
@@ -106,21 +108,24 @@ class ChatPage extends React.Component {
         ))}
         <div className="anchor"></div>
         <div className="send-newMessage-div">
-          <form className="send-newMessage-form" onSubmit={this.handleSubmit}>
-            <FormInput
-              className="send-newMessage-input"
-              type="text"
-              name="newMessage"
-              value={newMessage}
-              onChange={this.handleChange}
-              label="New Message"
-              required
-            />
-            <CustomButton className="send-newMessage-button" type="submit">
-              {" "}
-              Send{" "}
-            </CustomButton>
-          </form>
+          <Form onSubmit={this.handleSubmit}>
+            <InputGroup className="mb-3">
+              <FormControl
+                placeholder="New message"
+                type="text"
+                name="newMessage"
+                value={newMessage}
+                onChange={this.handleChange}
+                label="New Message"
+                required
+              />
+              <InputGroup.Append>
+                <Button variant="outline-primary" type="submit">
+                  Send
+                </Button>
+              </InputGroup.Append>
+            </InputGroup>
+          </Form>
         </div>
       </div>
     );
