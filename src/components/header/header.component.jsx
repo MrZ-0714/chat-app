@@ -1,6 +1,8 @@
 import React from "react";
 import "./header.styles.scss";
 
+import { Link } from "react-router-dom";
+
 //redux
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
@@ -14,17 +16,22 @@ const Header = ({ currentUser, signOutCurrentUserProps }) => {
   return (
     <div className="header">
       {currentUser ? (
-        <div
-          className="option"
-          onClick={() => {
-            signOutCurrentUser();
-            signOutCurrentUserProps();
-          }}
-        >
-          Sign Out
+        <div className="signed-in-header">
+          <div className="options">+</div>
+          <div
+            className="options"
+            onClick={() => {
+              signOutCurrentUser();
+              signOutCurrentUserProps();
+            }}
+          >
+            Sign Out
+          </div>
         </div>
       ) : (
-        <div> </div>
+        <div className="no-signed-in-header">
+          <Link to="/signin">Sign In</Link>
+        </div>
       )}
     </div>
   );
