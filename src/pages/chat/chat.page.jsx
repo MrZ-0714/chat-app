@@ -33,7 +33,14 @@ class ChatPage extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.showMoreMessages = this.showMoreMessages.bind(this);
+    this.scrollToBottom = this.scrollToBottom.bind(this);
   }
+
+  messagesEndRef = React.createRef();
+
+  scrollToBottom = () => {
+    this.messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   showMoreMessages() {
     const { collectionInfo } = this.state;
@@ -69,6 +76,12 @@ class ChatPage extends React.Component {
       (chatData) => this.setState({ chatMessages: chatData }),
       collectionInfo
     );
+
+    this.scrollToBottom();
+  }
+
+  componentDidUpdate() {
+    this.scrollToBottom();
   }
 
   handleSubmit(event) {
@@ -109,7 +122,7 @@ class ChatPage extends React.Component {
         {chatMessages.map(({ mId, ...otherProps }) => (
           <ChatMessage key={mId} {...otherProps} />
         ))}
-        <div className="anchor"></div>
+        <div ref={this.messagesEndRef}></div>
         <div className="send-newMessage-div">
           <Form onSubmit={this.handleSubmit}>
             <InputGroup className="mb-3">
