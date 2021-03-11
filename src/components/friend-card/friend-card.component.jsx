@@ -9,15 +9,15 @@ import Col from "react-bootstrap/Col";
 const FriendCard = ({ currentUser }) => {
   return (
     <Container>
-      <Row>
-        <Col>
+      <Row >
+        <Col xs={3} md={3} lg={3} className="friend-avatar-div">
           <img
+            className="friend-avatar-img"
             src="https://avatars.dicebear.com/api/avataaars/zGKZiEa6rFULgxpu5pWPvvEK6aC2.svg?mouth[]=smile"
             alt="user avatar"
           />
-          test
         </Col>
-        <Col>
+        <Col xs={9} md={9} lg={9}>
           <Row>
             <Col>{currentUser.displayName}</Col>
           </Row>

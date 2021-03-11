@@ -17,7 +17,9 @@ const Header = ({ currentUser, signOutCurrentUserProps }) => {
     <div className="header">
       {currentUser ? (
         <div className="signed-in-header">
-          <div className="options">+</div>
+          <div className="options">
+            <Link to="/search">+</Link>
+          </div>
           <div
             className="options"
             onClick={() => {

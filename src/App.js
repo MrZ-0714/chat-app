@@ -6,6 +6,7 @@ import Header from "./components/header/header.component";
 import NavBar from "./components/Nav-bar/nav-bar.component";
 import SignUp from "./components/sign-up/sign-up.component";
 import SignIn from "./components/sign-in/sign-in.component";
+import SearchPage from "./pages/search/search.page";
 import FriendsPage from "./pages/friends/friends.page";
 import ChatPage from "./pages/chat/chat.page";
 import LandingPage from "./pages/landing/landing.page";
@@ -44,6 +45,7 @@ class App extends React.Component {
               render={() => (currentUser ? <ChatPage /> : <SignIn />)}
             />
             <Route exact path="/friends" render={() => <FriendsPage />} />
+            <Route exact path="/search" render={() => <SearchPage />} />
           </Switch>
         </header>
         <NavBar />

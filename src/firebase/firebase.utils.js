@@ -24,9 +24,11 @@ export const createUserWithEmailAndPassword = async (
     .createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
       // Signed in
+      const uid = auth.currentUser.uid;
       auth.currentUser
         .updateProfile({
           displayName: displayName,
+          photoURL: `https://avatars.dicebear.com/api/avataaars/${uid}.svg?mouth[]=smile`,
         })
         .then(() => console.log("Display name updated to: " + displayName))
         .catch((e) => console.log("Error update user profile: " + e));
@@ -53,18 +55,22 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 
   const userRef = firestore.doc(`users/${userAuth.uid}`);
   const snapShot = await userRef.get();
+  const uid = userAuth.uid;
 
   if (!snapShot.exists) {
     const { email } = userAuth;
     const createdAt = new Date();
+    const photoURL = `https://avatars.dicebear.com/api/avataaars/${uid}.svg?mouth[]=smile`;
 
     try {
       await userRef.set({
         email,
         createdAt,
+        photoURL,
         ...additionalData,
       });
     } catch (err) {
+      alert("Error creating user" + err.message);
       console.log("Error creating user" + err.message);
     }
   }
