@@ -90,18 +90,22 @@ class ChatPage extends React.Component {
 
   render() {
     const { newMessage, chatMessages } = this.state;
-    console.log("I am rendering");
+    console.log("Rendering chat-page");
+
     return (
       <div className="chat-page">
         <h1>Chat</h1>
-        <Button
-          variant="secondary"
-          size="sm"
-          block
-          onClick={this.showMoreMessages}
-        >
-          show previous messages
-        </Button>
+        <div className="show-more-button-wrapper">
+          <Button
+            className="show-more-button"
+            variant="secondary"
+            size="sm"
+            block
+            onClick={this.showMoreMessages}
+          >
+            show previous messages
+          </Button>
+        </div>
         {chatMessages.map(({ mId, ...otherProps }) => (
           <ChatMessage key={mId} {...otherProps} />
         ))}
