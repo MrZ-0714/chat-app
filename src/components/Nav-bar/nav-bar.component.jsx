@@ -7,7 +7,7 @@ import { LinkContainer } from "react-router-bootstrap";
 
 const NavBar = () => {
   return (
-    <Nav variant="pills" fill defaultActiveKey="/friends">
+    <Nav variant="pills" fill className="nav-bar">
       <Nav.Item>
         <LinkContainer to="/friends">
           <Nav.Link>Friends</Nav.Link>

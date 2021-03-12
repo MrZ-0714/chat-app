@@ -119,25 +119,48 @@ export const saveChatMessageToFirebase = (currentUser, chatMessageToAdd) => {
 };
 
 export const getCollectionData = (callbackFn, collectionInfo) => {
-  if (collectionInfo.collectionName === "chatMessages") {
-    // Get chat collection
-    const chatMessagesRef = firestore.collection(collectionInfo.collectionName);
-    // Get latest 15 chat messages
-    const chatMessagesToRetrive = chatMessagesRef
+  const {
+    collectionName,
+    messageCount = null,
+    filter: { filterName, filterValue } = {
+      filterName: null,
+      filterValue: null,
+    },
+  } = collectionInfo;
+
+  console.log("collectionName: " + collectionName);
+  // Define collection
+  const collectionDataRef = firestore.collection(collectionName);
+  // Get latest 15 chat messages
+  if (messageCount) {
+    const collectionDataLimited = collectionDataRef
       .orderBy("createdAt", "desc")
-      .limit(collectionInfo.messageCount);
+      .limit(messageCount);
     // Set up a listener on last 15 messages
-    chatMessagesToRetrive.onSnapshot((querySnapshot) => {
-      const chatData = [];
+    collectionDataLimited.onSnapshot((querySnapshot) => {
+      const limitedData = [];
       querySnapshot.forEach((doc) => {
-        chatData.push({ mId: doc.id, ...doc.data() });
+        limitedData.unshift({ mId: doc.id, ...doc.data() });
       });
-      console.log(
-        chatData.sort((a, b) => {
-          return a.createdAt - b.createdAt;
-        })
-      );
-      callbackFn(chatData);
+      callbackFn(limitedData);
+    });
+  }
+
+  if (filterName && filterValue) {
+    console.log(filterName);
+    const collectionDataFiltered = collectionDataRef.where(
+      filterName,
+      "==",
+      filterValue
+    );
+
+    collectionDataFiltered.get().then((querySnapshot) => {
+      const data = [];
+      querySnapshot.forEach((doc) => {
+        console.log(doc.id, " => ", doc.data());
+        data.push(doc.data());
+      });
+      callbackFn(data);
     });
   }
 };

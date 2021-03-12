@@ -48,7 +48,8 @@ class App extends React.Component {
             <Route exact path="/search" render={() => <SearchPage />} />
           </Switch>
         </header>
-        <NavBar />
+
+        <footer className="App-footer">{currentUser && <NavBar />}</footer>
       </div>
     );
   }

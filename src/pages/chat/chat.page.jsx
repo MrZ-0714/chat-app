@@ -76,8 +76,6 @@ class ChatPage extends React.Component {
       (chatData) => this.setState({ chatMessages: chatData }),
       collectionInfo
     );
-
-    this.scrollToBottom();
   }
 
   componentDidUpdate() {
