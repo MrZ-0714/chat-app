@@ -148,19 +148,18 @@ export const getCollectionData = (callbackFn, collectionInfo) => {
 
   if (filterName && filterValue) {
     console.log(filterName);
-    const collectionDataFiltered = collectionDataRef.where(
-      filterName,
-      "==",
-      filterValue
-    );
-
-    collectionDataFiltered.get().then((querySnapshot) => {
-      const data = [];
-      querySnapshot.forEach((doc) => {
-        console.log(doc.id, " => ", doc.data());
-        data.push(doc.data());
+    collectionDataRef
+      .where(filterName, "==", filterValue)
+      .get()
+      .then((querySnapshot) => {
+        const data = [];
+        querySnapshot.forEach((doc) => {
+          console.log(doc.id, " => ", doc.data());
+          data.push({ uid: doc.id, ...doc.data() });
+        });
+        console.log("In data call");
+        console.log(data);
+        callbackFn(data);
       });
-      callbackFn(data);
-    });
   }
 };

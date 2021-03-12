@@ -6,10 +6,10 @@ import Col from "react-bootstrap/Col";
 
 //Redux
 
-const FriendCard = ({ currentUser }) => {
+const FriendCard = () => {
   return (
     <Container>
-      <Row >
+      <Row>
         <Col xs={3} md={3} lg={3} className="friend-avatar-div">
           <img
             className="friend-avatar-img"
@@ -19,10 +19,10 @@ const FriendCard = ({ currentUser }) => {
         </Col>
         <Col xs={9} md={9} lg={9}>
           <Row>
-            <Col>{currentUser.displayName}</Col>
+            <Col>UserNamePlaceHolder</Col>
           </Row>
           <Row>
-            <Col>{currentUser.uid}</Col>
+            <Col>UserID placeholder</Col>
           </Row>
         </Col>
       </Row>
