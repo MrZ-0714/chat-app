@@ -5,18 +5,22 @@ import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { selectCurrentUser } from "../../redux/user/user.selectors";
 
-import { getCollectionData } from "../../firebase/firebase.utils";
+import {
+  getCollectionData,
+  addFriendToCurrentUser,
+} from "../../firebase/firebase.utils";
 
 // import FriendCard from "../../components/friend-card/friend-card.component";
+import Button from "react-bootstrap/Button";
 import FriendCard from "../../components/friend-card/friend-card.component";
 import FormInputButton from "../../components/form-input-button/form-input-button.component";
 
-const SearchPage = () => {
+const SearchPage = ({ currentUser }) => {
   const [collectionInfo, setCollectionInfo] = useState({
     collectionName: "users",
     filter: {
       filterName: "displayName",
-      filterValue: "MRZ",
+      filterValue: null,
     },
   });
 
@@ -24,22 +28,14 @@ const SearchPage = () => {
     userData: {},
   });
 
-  // const [userProfile, setUserProfile] = useState({ friendsData: [] });
-
-  // useEffect(() => {
-  //   let isMounted = true; // note this flag denote mount status
-  //   // if (isMounted && collectionInfo) {
-  //   //   getCollectionData((dataReturned) => {
-  //   //     setUserProfile({ friendsData: dataReturned });
-  //   //     setcollectionInfo({});
-  //   //     console.log(collectionInfo);
-  //   //   }, collectionInfo);
-  //   // }
-
-  //   return () => {
-  //     isMounted = false;
-  //   }; // use effect cleanup to set flag false, if unmounted
+  // const [friendInfo, setFriendInfo] = useState({
+  //   currentUserId: currentUser.uid,
+  //   toBeAddedUserId: null,
   // });
+  const [friendInfo, setFriendInfo] = useState({
+    currentUserId: "1eOyvAOC4KfJtn0OnKWbG2OG9eE2",
+    toBeAddedUserId: "CZmlpYUqQ7OZVvUOg5Ia4bQZazE2",
+  });
 
   const handleChange = (event) => {
     setCollectionInfo({
@@ -62,6 +58,19 @@ const SearchPage = () => {
     }, collectionInfo);
   };
 
+  const handleClick = () => {
+    // setFriendInfo({
+    //   currentUserId: currentUser.uid,
+    //   toBeAddedUserId: searchResult.userData[0].uid,
+    // });
+
+    addFriendToCurrentUser((res) => {
+      res
+        ? alert("There is an error adding friend")
+        : alert("Friend successfully added");
+    }, friendInfo);
+  };
+
   return (
     <div className="search-page">
       Search to add friend
@@ -72,13 +81,24 @@ const SearchPage = () => {
         buttonLabel={"Search"}
       />
       {searchResult.userData.length > 0 ? (
-        searchResult.userData.map(({ uid, ...otherProps }) => (
-          <FriendCard key={uid} {...otherProps} />
-        ))
+        <div>
+          {searchResult.userData.map(({ uid, ...otherProps }) => (
+            <FriendCard key={uid} {...otherProps} />
+          ))}
+          <Button
+            variant="outline-success"
+            size="md"
+            block
+            onClick={handleClick}
+          >
+            Add friend
+          </Button>
+        </div>
       ) : (
         <div>No match</div>
       )}
-      <div></div>
+      <div>{friendInfo.currentUserId}</div>
+      <div>{friendInfo.toBeAddedUserId}</div>
     </div>
   );
 };

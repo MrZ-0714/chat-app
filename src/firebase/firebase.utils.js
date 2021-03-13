@@ -55,10 +55,9 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 
   const userRef = firestore.doc(`users/${userAuth.uid}`);
   const snapShot = await userRef.get();
-  const uid = userAuth.uid;
 
   if (!snapShot.exists) {
-    const { email } = userAuth;
+    const { email, uid } = userAuth;
     const createdAt = new Date();
     const photoURL = `https://avatars.dicebear.com/api/avataaars/${uid}.svg?mouth[]=smile`;
 
@@ -162,4 +161,24 @@ export const getCollectionData = (callbackFn, collectionInfo) => {
         callbackFn(data);
       });
   }
+};
+
+export const addFriendToCurrentUser = (callbackFn, friendInfo) => {
+  const { currentUserId, toBeAddedUserId } = friendInfo;
+  console.log(currentUserId);
+  console.log(toBeAddedUserId);
+  const currentUserRef = firestore.collection("users").doc(currentUserId);
+  console.log(currentUserRef);
+
+  currentUserRef
+    .update({
+      friendList: firebase.firestore.FieldValue.arrayUnion(
+        firestore.collection("users").doc(toBeAddedUserId)
+      ),
+    })
+    .then(() => {
+      console.log("user: ", toBeAddedUserId, "is added to uses", currentUserId);
+      callbackFn(0);
+    })
+    .catch((err) => console.log("Error updating document: ", err));
 };
