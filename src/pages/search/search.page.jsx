@@ -64,15 +64,20 @@ const SearchPage = () => {
 
   return (
     <div className="search-page">
-      I am friends page
-      <div>Here will be friends list from db</div>
+      Search to add friend
       <FormInputButton
         handleChange={handleChange}
         handleSubmit={handleSubmit}
         placeholder={"Search display name"}
         buttonLabel={"Search"}
       />
-      {searchResult.userData ? <FriendCard /> : <div>No match</div>}
+      {searchResult.userData.length > 0 ? (
+        searchResult.userData.map(({ uid, ...otherProps }) => (
+          <FriendCard key={uid} {...otherProps} />
+        ))
+      ) : (
+        <div>No match</div>
+      )}
       <div></div>
     </div>
   );
