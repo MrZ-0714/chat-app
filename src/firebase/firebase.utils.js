@@ -164,21 +164,50 @@ export const getCollectionData = (callbackFn, collectionInfo) => {
 };
 
 export const addFriendToCurrentUser = (callbackFn, friendInfo) => {
-  const { currentUserId, toBeAddedUserId } = friendInfo;
+  const { currentUserId, targetUserId } = friendInfo;
   console.log(currentUserId);
-  console.log(toBeAddedUserId);
+  console.log(targetUserId);
   const currentUserRef = firestore.collection("users").doc(currentUserId);
-  console.log(currentUserRef);
+  const targetUserRef = firestore.collection("users").doc(targetUserId);
 
+  //Modify the current users' profile
   currentUserRef
     .update({
-      friendList: firebase.firestore.FieldValue.arrayUnion(
-        firestore.collection("users").doc(toBeAddedUserId)
+      friendRequestSentTo: firebase.firestore.FieldValue.arrayUnion(
+        firestore.collection("users").doc(targetUserId)
       ),
     })
     .then(() => {
-      console.log("user: ", toBeAddedUserId, "is added to uses", currentUserId);
+      console.log(
+        "Friend request from user: ",
+        currentUserId,
+        " is sent to user: ",
+        targetUserId
+      );
       callbackFn(0);
     })
-    .catch((err) => console.log("Error updating document: ", err));
+    .catch((err) => {
+      console.log("Error updating document: ", err);
+      callbackFn(1);
+    });
+  //modify the target user's profile
+  targetUserRef
+    .update({
+      friendRequestReceivedFrom: firebase.firestore.FieldValue.arrayUnion(
+        firestore.collection("users").doc(currentUserId)
+      ),
+    })
+    .then(() => {
+      console.log(
+        "Friend request from user: ",
+        currentUserId,
+        " is received by: ",
+        targetUserId
+      );
+      callbackFn(0);
+    })
+    .catch((err) => {
+      console.log("Error updating document: ", err);
+      callbackFn(1);
+    });
 };

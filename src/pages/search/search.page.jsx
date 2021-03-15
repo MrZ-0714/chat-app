@@ -30,12 +30,12 @@ const SearchPage = ({ currentUser }) => {
 
   // const [friendInfo, setFriendInfo] = useState({
   //   currentUserId: currentUser.uid,
-  //   toBeAddedUserId: null,
+  //   targetUserId: null,
   // });
-  const [friendInfo, setFriendInfo] = useState({
-    currentUserId: "1eOyvAOC4KfJtn0OnKWbG2OG9eE2",
-    toBeAddedUserId: "CZmlpYUqQ7OZVvUOg5Ia4bQZazE2",
-  });
+  // const [friendInfo, setFriendInfo] = useState({
+  //   currentUserId: "1eOyvAOC4KfJtn0OnKWbG2OG9eE2",
+  //   targetUserId: "CZmlpYUqQ7OZVvUOg5Ia4bQZazE2",
+  // });
 
   const handleChange = (event) => {
     setCollectionInfo({
@@ -54,20 +54,21 @@ const SearchPage = ({ currentUser }) => {
 
     getCollectionData((dataReturned) => {
       setSearchResult({ userData: dataReturned });
-      console.log(dataReturned);
     }, collectionInfo);
   };
 
   const handleClick = () => {
-    // setFriendInfo({
-    //   currentUserId: currentUser.uid,
-    //   toBeAddedUserId: searchResult.userData[0].uid,
-    // });
+    const friendInfo = {
+      currentUserId: currentUser.uid,
+      targetUserId: searchResult.userData[0].uid,
+    };
+
+    console.log(friendInfo);
 
     addFriendToCurrentUser((res) => {
       res
         ? alert("There is an error adding friend")
-        : alert("Friend successfully added");
+        : alert("Request send to user");
     }, friendInfo);
   };
 
@@ -97,8 +98,6 @@ const SearchPage = ({ currentUser }) => {
       ) : (
         <div>No match</div>
       )}
-      <div>{friendInfo.currentUserId}</div>
-      <div>{friendInfo.toBeAddedUserId}</div>
     </div>
   );
 };
