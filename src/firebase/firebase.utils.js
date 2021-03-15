@@ -165,23 +165,27 @@ export const getCollectionData = async (callbackFn, queryInfo) => {
   if (docName && getRefInDoc) {
     const docRef = collectionDataRef.doc(docName);
     console.log("I am in the db call");
-    const doc = await docRef.get();
-    const friendRequestSentTo = doc.data().friendRequestSentTo;
     try {
-      const friendList = await Promise.all(
-        friendRequestSentTo.map(async (friend) => {
-          try {
-            const friendRef = await friend.get();
-            return { uid: friendRef.id, ...friendRef.data() };
-          } catch (err) {
-            console.log("There is an err getting frienddata in list", err);
-          }
-        })
-      );
-      callbackFn(friendList);
+      const doc = await docRef.get();
+      const friendRequestSentTo = doc.data().friendRequestSentTo;
+      try {
+        const friendList = await Promise.all(
+          friendRequestSentTo.map(async (friend) => {
+            try {
+              const friendRef = await friend.get();
+              return { uid: friendRef.id, ...friendRef.data() };
+            } catch (err) {
+              console.log("There is an err getting frienddata in list", err);
+            }
+          })
+        );
+        callbackFn(friendList);
+      } catch (err) {
+        console.log("There is an error", err);
+        callbackFn(1);
+      }
     } catch (err) {
-      console.log("There is an error", err);
-      callbackFn(1);
+      console.log("Error getting current user's data reference", err);
     }
   }
 };
