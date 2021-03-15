@@ -39,8 +39,6 @@ const SearchPage = ({ currentUser }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Form submitted to service with data: ");
-    console.log(collectionInfo);
 
     getCollectionData((dataReturned) => {
       setSearchResult({ userData: dataReturned });
@@ -48,18 +46,13 @@ const SearchPage = ({ currentUser }) => {
   };
 
   const handleClick = () => {
-    const friendInfo = {
+    const friendRequestInfo = {
       currentUserId: currentUser.uid,
       targetUserId: searchResult.userData[0].uid,
     };
-
-    console.log(friendInfo);
-
     sendFriendRequest((res) => {
-      res
-        ? alert("There is an error adding friend")
-        : alert("Request send to user");
-    }, friendInfo);
+      res && alert("There is an error adding friend");
+    }, friendRequestInfo);
   };
 
   return (
