@@ -190,13 +190,13 @@ export const sendFriendRequest = (callbackFn, friendInfo) => {
     currentUserId,
     targetUserId,
     " sent friend request to",
-    "friendRequestSentTo"
+    "friendRequestsSentTo"
   );
   // modify target user's profile
   sendFriendRequest(
     targetUserId,
     currentUserId,
     " received friend request from",
-    "friendRequestReceivedFrom"
+    "friendRequestsReceivedFrom"
   );
 };
