@@ -163,7 +163,7 @@ export const getCollectionData = (callbackFn, collectionInfo) => {
   }
 };
 
-export const addFriendToCurrentUser = (callbackFn, friendInfo) => {
+export const sendFriendRequest = (callbackFn, friendInfo) => {
   const { currentUserId, targetUserId } = friendInfo;
   console.log(currentUserId);
   console.log(targetUserId);

@@ -7,10 +7,9 @@ import { selectCurrentUser } from "../../redux/user/user.selectors";
 
 import {
   getCollectionData,
-  addFriendToCurrentUser,
+  sendFriendRequest,
 } from "../../firebase/firebase.utils";
 
-// import FriendCard from "../../components/friend-card/friend-card.component";
 import Button from "react-bootstrap/Button";
 import FriendCard from "../../components/friend-card/friend-card.component";
 import FormInputButton from "../../components/form-input-button/form-input-button.component";
@@ -27,15 +26,6 @@ const SearchPage = ({ currentUser }) => {
   const [searchResult, setSearchResult] = useState({
     userData: {},
   });
-
-  // const [friendInfo, setFriendInfo] = useState({
-  //   currentUserId: currentUser.uid,
-  //   targetUserId: null,
-  // });
-  // const [friendInfo, setFriendInfo] = useState({
-  //   currentUserId: "1eOyvAOC4KfJtn0OnKWbG2OG9eE2",
-  //   targetUserId: "CZmlpYUqQ7OZVvUOg5Ia4bQZazE2",
-  // });
 
   const handleChange = (event) => {
     setCollectionInfo({
@@ -65,7 +55,7 @@ const SearchPage = ({ currentUser }) => {
 
     console.log(friendInfo);
 
-    addFriendToCurrentUser((res) => {
+    sendFriendRequest((res) => {
       res
         ? alert("There is an error adding friend")
         : alert("Request send to user");
