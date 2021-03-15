@@ -1,55 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./friends.styles.scss";
 
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { selectCurrentUser } from "../../redux/user/user.selectors";
 
-// import { getCollectionData } from "../../firebase/firebase.utils";
+import { getCollectionData } from "../../firebase/firebase.utils";
 
 // import FriendCard from "../../components/friend-card/friend-card.component";
 import FormInputButton from "../../components/form-input-button/form-input-button.component";
 
 const FriendsPage = ({ currentUser }) => {
-  const [collectionInfo, setCollectionInfo] = useState({
-    collectionName: "users",
-    filter: {
-      filterName: "displayName",
-      filterValue: "MRZ",
-    },
+  const [friendList, setFriendList] = useState({
+    friendListData: [],
   });
-
-  // const [userProfile, setUserProfile] = useState({ friendsData: [] });
-
-  // useEffect(() => {
-  //   let isMounted = true; // note this flag denote mount status
-  //   // if (isMounted && collectionInfo) {
-  //   //   getCollectionData((dataReturned) => {
-  //   //     setUserProfile({ friendsData: dataReturned });
-  //   //     setcollectionInfo({});
-  //   //     console.log(collectionInfo);
-  //   //   }, collectionInfo);
-  //   // }
-
-  //   return () => {
-  //     isMounted = false;
-  //   }; // use effect cleanup to set flag false, if unmounted
-  // });
-
+  const [search, setSearch] = useState({
+    searchFor: "",
+  });
   const handleChange = (event) => {
-    setCollectionInfo({
-      collectionName: "user",
-      filter: {
-        filterName: "displayName",
-        filterValue: event.target.value,
-      },
-    });
+    setSearch({ searchFor: event.target.value });
   };
+
+  useEffect(() => {
+    const queryInfo = {
+      collectionName: "users",
+      docName: "1eOyvAOC4KfJtn0OnKWbG2OG9eE2",
+      getRefInDoc: true,
+    };
+    console.log("I just loaded");
+    getCollectionData((res) => {
+      console.log("I am back to friend page", res);
+    }, queryInfo);
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("Form submitted to service");
-    console.log(collectionInfo);
   };
 
   return (
@@ -62,6 +48,7 @@ const FriendsPage = ({ currentUser }) => {
         placeholder={"Search display name"}
         buttonLabel={"Search"}
       />
+      <div>{search.searchFor}</div>
     </div>
   );
 };

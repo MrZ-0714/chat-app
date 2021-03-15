@@ -117,7 +117,7 @@ export const saveChatMessageToFirebase = (currentUser, chatMessageToAdd) => {
     });
 };
 
-export const getCollectionData = (callbackFn, collectionInfo) => {
+export const getCollectionData = (callbackFn, queryInfo) => {
   const {
     collectionName,
     messageCount = null,
@@ -125,11 +125,14 @@ export const getCollectionData = (callbackFn, collectionInfo) => {
       filterName: null,
       filterValue: null,
     },
-  } = collectionInfo;
+    docName = null,
+    getRefInDoc = null,
+  } = queryInfo;
 
   console.log("collectionName: " + collectionName);
   // Define collection
   const collectionDataRef = firestore.collection(collectionName);
+
   // Get latest 15 chat messages
   if (messageCount) {
     const collectionDataLimited = collectionDataRef
@@ -146,7 +149,6 @@ export const getCollectionData = (callbackFn, collectionInfo) => {
   }
 
   if (filterName && filterValue) {
-    console.log(filterName);
     collectionDataRef
       .where(filterName, "==", filterValue)
       .get()
@@ -156,6 +158,51 @@ export const getCollectionData = (callbackFn, collectionInfo) => {
           data.push({ uid: doc.id, ...doc.data() });
         });
         callbackFn(data);
+      });
+  }
+
+  if (docName && getRefInDoc) {
+    const docRef = collectionDataRef.doc(docName);
+    docRef
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          var friendList = [];
+          const friendRequestSentTo = doc.data().friendRequestSentTo;
+
+          friendRequestSentTo.map((userRef) =>
+            userRef.get().then((doc) => {
+              console.log("I am getting user data from Refs", doc.data());
+              // console.log(doc.data());
+              friendList.push(doc.data());
+            })
+          );
+          console.log(
+            "l1: ",
+            friendList.length,
+            "l2: ",
+            friendRequestSentTo.length
+          );
+          if (friendList.length === friendRequestSentTo.length) {
+            callbackFn(friendList);
+          }
+          console.log("before callback");
+          console.log(
+            "print lenght again: ",
+            "l1: ",
+            friendList.length,
+            "l2: ",
+            friendRequestSentTo.length
+          );
+          callbackFn(friendList);
+          console.log("after callback");
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      })
+      .catch((error) => {
+        console.log("Error getting document:", error);
       });
   }
 };
