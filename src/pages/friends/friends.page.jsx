@@ -29,8 +29,12 @@ const FriendsPage = ({ currentUser }) => {
     };
     console.log("I just loaded");
     getCollectionData((res) => {
+      
       console.log("I am back to friend page", res);
+      res.push("aaaaaa");
+      setFriendList({ friendListData: res });
     }, queryInfo);
+    console.log("I am after call back");
   }, []);
 
   const handleSubmit = (event) => {
