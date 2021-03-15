@@ -167,10 +167,10 @@ export const getCollectionData = async (callbackFn, queryInfo) => {
     console.log("I am in the db call");
     try {
       const doc = await docRef.get();
-      const friendRequestSentTo = doc.data().friendRequestSentTo;
+      const friendRequestsSentTo = doc.data().friendRequestsSentTo;
       try {
         const friendList = await Promise.all(
-          friendRequestSentTo.map(async (friend) => {
+          friendRequestsSentTo.map(async (friend) => {
             try {
               const friendRef = await friend.get();
               return { uid: friendRef.id, ...friendRef.data() };
