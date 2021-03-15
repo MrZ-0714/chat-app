@@ -117,7 +117,8 @@ export const saveChatMessageToFirebase = (currentUser, chatMessageToAdd) => {
     });
 };
 
-export const getCollectionData = (callbackFn, queryInfo) => {
+export const getCollectionData = async (callbackFn, queryInfo) => {
+  //destructure the input patameters
   const {
     collectionName,
     messageCount = null,
@@ -164,39 +165,24 @@ export const getCollectionData = (callbackFn, queryInfo) => {
   if (docName && getRefInDoc) {
     const docRef = collectionDataRef.doc(docName);
     console.log("I am in the db call");
-    docRef
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          var friendList = [];
-          const friendRequestSentTo = doc.data().friendRequestSentTo;
-
-          friendRequestSentTo.map((userRef) =>
-            userRef.get().then((doc) => {
-              console.log("I am getting user data from Refs", doc.data());
-              // console.log(doc.data());
-              friendList.push({ uid: doc.id, ...doc.data() });
-              console.log("test in", friendList);
-            })
-          );
-          console.log(
-            "l1: ",
-            friendList.length,
-            "l2: ",
-            friendRequestSentTo.length
-          );
-          console.log("before callback");
-          callbackFn(friendList);
-
-          console.log("after callback");
-        } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
-        }
-      })
-      .catch((error) => {
-        console.log("Error getting document:", error);
-      });
+    const doc = await docRef.get();
+    const friendRequestSentTo = doc.data().friendRequestSentTo;
+    try {
+      const friendList = await Promise.all(
+        friendRequestSentTo.map(async (friend) => {
+          try {
+            const friendRef = await friend.get();
+            return { uid: friendRef.id, ...friendRef.data() };
+          } catch (err) {
+            console.log("There is an err getting frienddata in list", err);
+          }
+        })
+      );
+      callbackFn(friendList);
+    } catch (err) {
+      console.log("There is an error", err);
+      callbackFn(1);
+    }
   }
 };
 

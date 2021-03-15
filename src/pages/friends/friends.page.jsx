@@ -29,8 +29,12 @@ const FriendsPage = ({ currentUser }) => {
     };
     console.log("I just loaded");
     getCollectionData((res) => {
-      console.log("I am back to friend page", res);
-      setFriendList({ friendListData: res });
+      if (res !== 1) {
+        console.log("I am back to friend page", res);
+        setFriendList({ friendListData: res });
+      } else {
+        console.log("Error getting friend data from firestore");
+      }
     }, queryInfo);
     console.log("I am after call back");
   }, []);
