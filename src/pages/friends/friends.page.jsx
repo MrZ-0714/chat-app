@@ -7,7 +7,7 @@ import { selectCurrentUser } from "../../redux/user/user.selectors";
 
 import { getCollectionData } from "../../firebase/firebase.utils";
 
-// import FriendCard from "../../components/friend-card/friend-card.component";
+import FriendCard from "../../components/friend-card/friend-card.component";
 import FormInputButton from "../../components/form-input-button/form-input-button.component";
 
 const FriendsPage = ({ currentUser }) => {
@@ -29,9 +29,7 @@ const FriendsPage = ({ currentUser }) => {
     };
     console.log("I just loaded");
     getCollectionData((res) => {
-      
       console.log("I am back to friend page", res);
-      res.push("aaaaaa");
       setFriendList({ friendListData: res });
     }, queryInfo);
     console.log("I am after call back");
@@ -53,6 +51,15 @@ const FriendsPage = ({ currentUser }) => {
         buttonLabel={"Search"}
       />
       <div>{search.searchFor}</div>
+      {friendList.friendListData.length > 0 ? (
+        <div>
+          {friendList.friendListData.map(({ uid, ...otherProps }) => (
+            <FriendCard key={uid} {...otherProps} />
+          ))}
+        </div>
+      ) : (
+        <div>No match</div>
+      )}
     </div>
   );
 };

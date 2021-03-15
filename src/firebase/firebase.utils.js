@@ -134,32 +134,32 @@ export const getCollectionData = (callbackFn, queryInfo) => {
   const collectionDataRef = firestore.collection(collectionName);
 
   // Get latest 15 chat messages
-  // if (messageCount) {
-  //   const collectionDataLimited = collectionDataRef
-  //     .orderBy("createdAt", "desc")
-  //     .limit(messageCount);
-  //   // Set up a listener on last 15 messages
-  //   collectionDataLimited.onSnapshot((querySnapshot) => {
-  //     const limitedData = [];
-  //     querySnapshot.forEach((doc) => {
-  //       limitedData.unshift({ mId: doc.id, ...doc.data() });
-  //     });
-  //     callbackFn(limitedData);
-  //   });
-  // }
+  if (messageCount) {
+    const collectionDataLimited = collectionDataRef
+      .orderBy("createdAt", "desc")
+      .limit(messageCount);
+    // Set up a listener on last 15 messages
+    collectionDataLimited.onSnapshot((querySnapshot) => {
+      const limitedData = [];
+      querySnapshot.forEach((doc) => {
+        limitedData.unshift({ mId: doc.id, ...doc.data() });
+      });
+      callbackFn(limitedData);
+    });
+  }
 
-  // if (filterName && filterValue) {
-  //   collectionDataRef
-  //     .where(filterName, "==", filterValue)
-  //     .get()
-  //     .then((querySnapshot) => {
-  //       const data = [];
-  //       querySnapshot.forEach((doc) => {
-  //         data.push({ uid: doc.id, ...doc.data() });
-  //       });
-  //       callbackFn(data);
-  //     });
-  // }
+  if (filterName && filterValue) {
+    collectionDataRef
+      .where(filterName, "==", filterValue)
+      .get()
+      .then((querySnapshot) => {
+        const data = [];
+        querySnapshot.forEach((doc) => {
+          data.push({ uid: doc.id, ...doc.data() });
+        });
+        callbackFn(data);
+      });
+  }
 
   if (docName && getRefInDoc) {
     const docRef = collectionDataRef.doc(docName);
@@ -173,10 +173,9 @@ export const getCollectionData = (callbackFn, queryInfo) => {
 
           friendRequestSentTo.map((userRef) =>
             userRef.get().then((doc) => {
-
               console.log("I am getting user data from Refs", doc.data());
               // console.log(doc.data());
-              friendList.push(doc.data());
+              friendList.push({ uid: doc.id, ...doc.data() });
               console.log("test in", friendList);
             })
           );
@@ -187,14 +186,6 @@ export const getCollectionData = (callbackFn, queryInfo) => {
             friendRequestSentTo.length
           );
           console.log("before callback");
-          console.log(
-            "print lenght again: ",
-            "l1: ",
-            friendList.length,
-            "l2: ",
-            friendRequestSentTo.length
-          );
-          
           callbackFn(friendList);
 
           console.log("after callback");
