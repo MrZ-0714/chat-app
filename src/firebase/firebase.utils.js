@@ -168,6 +168,9 @@ export const getCollectionData = async (callbackFn, queryInfo) => {
     try {
       const doc = await docRef.get();
       const friendRequestsSentTo = doc.data().friendRequestsSentTo;
+      if (!friendRequestsSentTo) {
+        callbackFn(10);
+      }
       try {
         const friendList = await Promise.all(
           friendRequestsSentTo.map(async (friend) => {
@@ -182,7 +185,7 @@ export const getCollectionData = async (callbackFn, queryInfo) => {
         callbackFn(friendList);
       } catch (err) {
         console.log("There is an error", err);
-        callbackFn(1);
+        callbackFn(10);
       }
     } catch (err) {
       console.log("Error getting current user's data reference", err);

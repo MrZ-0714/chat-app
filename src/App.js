@@ -6,6 +6,8 @@ import Header from "./components/header/header.component";
 import NavBar from "./components/Nav-bar/nav-bar.component";
 import SignUp from "./components/sign-up/sign-up.component";
 import SignIn from "./components/sign-in/sign-in.component";
+// import WithSpinner from "./components/with-spinner-hoc/with-spinner-hoc.component";
+
 import SearchPage from "./pages/search/search.page";
 import FriendsPage from "./pages/friends/friends.page";
 import ChatPage from "./pages/chat/chat.page";
@@ -14,6 +16,8 @@ import LandingPage from "./pages/landing/landing.page";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { selectCurrentUser } from "./redux/user/user.selectors";
+
+// const FriendsPageWithSpinner = WithSpinner(FriendsPage);
 
 class App extends React.Component {
   render() {
@@ -47,9 +51,13 @@ class App extends React.Component {
             <Route
               exact
               path="/friends"
-              render={(currentUser) => (
-                <FriendsPage currentUser={currentUser} />
-              )}
+              render={() =>
+                currentUser ? (
+                  <FriendsPage currentUser={currentUser} />
+                ) : (
+                  <SignIn />
+                )
+              }
             />
             <Route exact path="/search" render={() => <SearchPage />} />
           </Switch>
