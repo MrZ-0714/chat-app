@@ -1,60 +1,36 @@
 import React, { useState, useEffect } from "react";
 import "./friends.styles.scss";
 
-import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
-import { selectCurrentUser } from "../../redux/user/user.selectors";
-
 import { getCollectionData } from "../../firebase/firebase.utils";
 
 import FriendCard from "../../components/friend-card/friend-card.component";
-import FormInputButton from "../../components/form-input-button/form-input-button.component";
 
 const FriendsPage = ({ currentUser }) => {
   const [friendList, setFriendList] = useState({
     friendListData: [],
   });
-  const [search, setSearch] = useState({
-    searchFor: "",
-  });
-  const handleChange = (event) => {
-    setSearch({ searchFor: event.target.value });
-  };
 
   useEffect(() => {
     const queryInfo = {
       collectionName: "users",
-      docName: "1eOyvAOC4KfJtn0OnKWbG2OG9eE2",
+      docName: currentUser.uid,
       getRefInDoc: true,
     };
     console.log("I just loaded");
+    console.log("Printing currentUser: ", currentUser);
     getCollectionData((res) => {
       if (res !== 1) {
         console.log("I am back to friend page", res);
         setFriendList({ friendListData: res });
       } else {
-        console.log("Error getting friend data from firestore");
+        console.log("Error getting friend data from firestore.");
       }
     }, queryInfo);
-    console.log("I am after call back");
   }, []);
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log("Form submitted to service");
-  };
 
   return (
     <div className="friends-page">
-      I am friends page
-      <div>Here will be friends list from db</div>
-      <FormInputButton
-        handleChange={handleChange}
-        handleSubmit={handleSubmit}
-        placeholder={"Search display name"}
-        buttonLabel={"Search"}
-      />
-      <div>{search.searchFor}</div>
+      <div>Friends: </div>
       {friendList.friendListData.length > 0 ? (
         <div>
           {friendList.friendListData.map(({ uid, ...otherProps }) => (
@@ -62,14 +38,10 @@ const FriendsPage = ({ currentUser }) => {
           ))}
         </div>
       ) : (
-        <div>No match</div>
+        <div>No friend, add one by press the + button</div>
       )}
     </div>
   );
 };
 
-const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser,
-});
-
-export default connect(mapStateToProps)(FriendsPage);
+export default FriendsPage;

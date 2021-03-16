@@ -44,7 +44,13 @@ class App extends React.Component {
               path="/chat"
               render={() => (currentUser ? <ChatPage /> : <SignIn />)}
             />
-            <Route exact path="/friends" render={() => <FriendsPage />} />
+            <Route
+              exact
+              path="/friends"
+              render={(currentUser) => (
+                <FriendsPage currentUser={currentUser} />
+              )}
+            />
             <Route exact path="/search" render={() => <SearchPage />} />
           </Switch>
         </header>
