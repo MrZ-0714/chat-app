@@ -17,8 +17,6 @@ import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { selectCurrentUser } from "./redux/user/user.selectors";
 
-// const FriendsPageWithSpinner = WithSpinner(FriendsPage);
-
 class App extends React.Component {
   render() {
     const { currentUser } = this.props;

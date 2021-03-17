@@ -6,14 +6,33 @@ import firebase from "firebase/app";
 // Add the Firebase products that you want to use
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/firebase-messaging";
 
-import firebaseConfig from "./firebase.config";
+import { firebaseConfig, vapidKey } from "./firebase.config";
 // Initialize Firebase
 
 firebase.initializeApp(firebaseConfig);
 
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
+export const messaging = firebase.messaging();
+
+messaging
+  .requestPermission()
+  .then(() => {
+    console.log("we have permission");
+    return messaging.getToken({
+      vapidKey: vapidKey,
+    });
+  })
+  .then((token) => {
+    console.log(token);
+  })
+  .catch((err) => console.log("No permission: ", err));
+
+messaging.onMessage((payload) => {
+  console.log(payload);
+});
 
 export const createUserWithEmailAndPassword = async (
   email,

@@ -12,6 +12,11 @@ import { store } from "./redux/store";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
+//import worker from public folder.
+const getPathFromPublic = (path) => `${process.env.PUBLIC_URL}/${path}`;
+const workerPath = getPathFromPublic("firebase-messaging-sw.js");
+const worker = new Worker(workerPath);
+
 ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
