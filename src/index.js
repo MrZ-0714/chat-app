@@ -10,12 +10,14 @@ import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
 
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 
 //import worker from public folder.
-const getPathFromPublic = (path) => `${process.env.PUBLIC_URL}/${path}`;
-const workerPath = getPathFromPublic("firebase-messaging-sw.js");
-const worker = new Worker(workerPath);
+// const getPathFromPublic = (path) => `${process.env.PUBLIC_URL}/${path}`;
+// const workerPath = getPathFromPublic("firebase-messaging-sw.js");
+// const worker = new Worker(workerPath);
 
 ReactDOM.render(
   <Provider store={store}>
@@ -27,6 +29,8 @@ ReactDOM.render(
   </Provider>,
   document.getElementById("root")
 );
+
+serviceWorkerRegistration.register();
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
