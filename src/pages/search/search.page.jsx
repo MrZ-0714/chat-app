@@ -51,7 +51,9 @@ const SearchPage = ({ currentUser }) => {
       targetUserId: searchResult.userData[0].uid,
     };
     sendFriendRequest((res) => {
-      res && alert("There is an error adding friend");
+      res
+        ? alert("There is an error adding friend")
+        : console.log("Friend request sent successfully with response: ", res);
     }, friendRequestInfo);
   };
 

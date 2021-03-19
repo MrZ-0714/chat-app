@@ -34,6 +34,46 @@ messaging.onMessage((payload) => {
   console.log(payload);
 });
 
+const getServerTimeStamp = () => {
+  return new Date();
+};
+
+const addRefToArrayOfDoc = (
+  collectionName_1,
+  collectionName_2,
+  docId_1,
+  docId_2,
+  arrayToBeModified,
+  callbackFn
+) => {
+  const doc_1_Ref = firestore.collection(collectionName_1).doc(docId_1);
+  doc_1_Ref
+    .update({
+      [arrayToBeModified]: firebase.firestore.FieldValue.arrayUnion(
+        firestore.collection(collectionName_2).doc(docId_2)
+      ),
+    })
+    .then(() => {
+      console.log(
+        "Referenced to collection: ",
+        collectionName_2,
+        " doc: ",
+        docId_2,
+        " is added to field (array)",
+        arrayToBeModified,
+        " of collection: ",
+        collectionName_1,
+        " doc: ",
+        docId_1
+      );
+      callbackFn(0);
+    })
+    .catch((err) => {
+      console.log("Error updating document: ", err);
+      callbackFn(1);
+    });
+};
+
 export const createUserWithEmailAndPassword = async (
   email,
   password,
@@ -112,7 +152,11 @@ export const signInWithEmailAndPassword = (email, password) =>
 
 export const signOutCurrentUser = () => auth.signOut();
 
-export const saveChatMessageToFirebase = (currentUser, chatMessageToAdd) => {
+export const saveChatMessageToFirebase = (
+  callbackFn,
+  currentUser,
+  chatMessageToAdd
+) => {
   if (!currentUser) {
     alert("Login first to chat");
     return;
@@ -127,13 +171,25 @@ export const saveChatMessageToFirebase = (currentUser, chatMessageToAdd) => {
     })
     .then((docRef) => {
       console.log("Document written with ID: ", docRef.id);
-      return 0;
+      callbackFn(0);
     })
     .catch((error) => {
       alert("Error adding chat message: " + chatMessageToAdd.message);
       console.error("Error adding document: ", error);
-      return 1;
+      callbackFn(1);
     });
+};
+
+export const createPrivateChatRoom = (currentUserUid, targetUserUid) => {
+  const createdAt = getServerTimeStamp();
+
+  firestore
+    .collection("privateChatRoom")
+    .add({
+      createdAt,
+      message: "test",
+    })
+    .then((docRef) => console.log(docRef.id));
 };
 
 export const getCollectionData = async (callbackFn, queryInfo) => {
@@ -214,41 +270,22 @@ export const getCollectionData = async (callbackFn, queryInfo) => {
 
 export const sendFriendRequest = (callbackFn, friendInfo) => {
   const { currentUserId, targetUserId } = friendInfo;
-
-  const sendFriendRequest = (
-    userId_1,
-    userId_2,
-    sentOrReceived,
-    sentOrReceivedListName
-  ) => {
-    const userId_1_Ref = firestore.collection("users").doc(userId_1);
-    userId_1_Ref
-      .update({
-        [sentOrReceivedListName]: firebase.firestore.FieldValue.arrayUnion(
-          firestore.collection("users").doc(userId_2)
-        ),
-      })
-      .then(() => {
-        console.log("User: ", userId_1, sentOrReceived, " user: ", userId_2);
-        callbackFn(0);
-      })
-      .catch((err) => {
-        console.log("Error updating document: ", err);
-        callbackFn(1);
-      });
-  };
   // modify current user's profile
-  sendFriendRequest(
+  addRefToArrayOfDoc(
+    "users",
+    "users",
     currentUserId,
     targetUserId,
-    " sent friend request to",
-    "friendRequestsSentTo"
+    "friendRequestsSentTo",
+    callbackFn
   );
   // modify target user's profile
-  sendFriendRequest(
+  addRefToArrayOfDoc(
+    "users",
+    "users",
     targetUserId,
     currentUserId,
-    " received friend request from",
-    "friendRequestsReceivedFrom"
+    "friendRequestsReceivedFrom",
+    callbackFn
   );
 };

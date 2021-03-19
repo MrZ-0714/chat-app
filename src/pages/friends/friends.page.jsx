@@ -44,7 +44,12 @@ const FriendsPage = (currentUser) => {
       {friendList.friendListData.length > 0 ? (
         <div>
           {friendList.friendListData.map(({ uid, ...otherProps }) => (
-            <FriendCard key={uid} {...otherProps} />
+            <FriendCard
+              key={uid}
+              currentUserUid={currentUser.currentUser.uid}
+              selectedUid={uid}
+              {...otherProps}
+            />
           ))}
         </div>
       ) : (
