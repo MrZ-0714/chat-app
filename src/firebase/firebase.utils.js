@@ -180,16 +180,64 @@ export const saveChatMessageToFirebase = (
     });
 };
 
-export const createPrivateChatRoom = (currentUserUid, targetUserUid) => {
+export const checkIfPrivateChatRoomAlreadyExist = (
+  currentUserUid,
+  targetUserUid,
+  callbackFn
+) => {
+  const privateChatRoomRef = firestore.collection("privateChatRooms");
+  console.log(currentUserUid);
+  console.log(targetUserUid);
+  privateChatRoomRef
+    .where("initiatedBy", "==", currentUserUid)
+    .where("invitee", "==", targetUserUid)
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        console.log(doc.id, " => ", doc.data());
+        callbackFn(true);
+      });
+    })
+    .catch((error) => {
+      console.log("Error getting documents: ", error);
+      callbackFn(false);
+    });
+};
+
+export const createPrivateChatRoom = (
+  callbackFn,
+  currentUserUid,
+  targetUserUid
+) => {
   const createdAt = getServerTimeStamp();
 
   firestore
-    .collection("privateChatRoom")
+    .collection("privateChatRooms")
     .add({
       createdAt,
-      message: "test",
+      initiatedBy: currentUserUid,
+      invitee: targetUserUid,
     })
-    .then((docRef) => console.log(docRef.id));
+    .then((docRef) => {
+      console.log(docRef.id);
+      const privateChatRoomId = docRef.id;
+      addRefToArrayOfDoc(
+        "users",
+        "privateChatRooms",
+        currentUserUid,
+        privateChatRoomId,
+        "privateChatRoomList",
+        callbackFn
+      );
+      addRefToArrayOfDoc(
+        "users",
+        "privateChatRooms",
+        targetUserUid,
+        privateChatRoomId,
+        "privateChatRoomList",
+        callbackFn
+      );
+    });
 };
 
 export const getCollectionData = async (callbackFn, queryInfo) => {

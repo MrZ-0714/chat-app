@@ -48,6 +48,7 @@ const FriendsPage = (currentUser) => {
               key={uid}
               currentUserUid={currentUser.currentUser.uid}
               selectedUid={uid}
+              buttonFunction={"Chat"}
               {...otherProps}
             />
           ))}

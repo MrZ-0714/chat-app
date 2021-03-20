@@ -5,7 +5,10 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Button } from "react-bootstrap";
 
-import { createPrivateChatRoom } from "../../firebase/firebase.utils.js";
+import {
+  createPrivateChatRoom,
+  checkIfPrivateChatRoomAlreadyExist,
+} from "../../firebase/firebase.utils.js";
 
 //Redux
 
@@ -13,12 +16,35 @@ const FriendCard = ({
   displayName,
   email,
   photoURL,
-  onClick,
   currentUserUid,
   selectedUid,
+  buttonFunction,
 }) => {
-  onClick = () => {
-    createPrivateChatRoom(currentUserUid, selectedUid);
+  console.log(buttonFunction);
+  const goToPrivateChatRoom = () => {
+    console.log("Go to private chat-room");
+  };
+
+  const doNothing = () => {
+    console.log("Do nothing");
+  };
+
+  const buttonClick = () => {
+    switch (buttonFunction) {
+      case "Chat":
+        checkIfPrivateChatRoomAlreadyExist(
+          currentUserUid,
+          selectedUid,
+          (res) => {
+            res ? goToPrivateChatRoom() : console.log("Will create new room");
+          }
+        );
+        break;
+      case "Detail":
+        break;
+      default:
+        doNothing();
+    }
   };
 
   return (
@@ -36,8 +62,8 @@ const FriendCard = ({
           </Row>
         </Col>
         <Col xs={2} md={2} lg={2}>
-          <Button variant="outline-success" onClick={onClick}>
-            Chat
+          <Button variant="outline-success" onClick={buttonClick}>
+            {buttonFunction}
           </Button>
         </Col>
       </Row>

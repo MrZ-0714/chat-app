@@ -9,6 +9,11 @@ const NavBar = () => {
   return (
     <Nav variant="pills" fill className="nav-bar">
       <Nav.Item>
+        <LinkContainer to="/private-room">
+          <Nav.Link>Chats</Nav.Link>
+        </LinkContainer>
+      </Nav.Item>
+      <Nav.Item>
         <LinkContainer to="/friends">
           <Nav.Link>Friends</Nav.Link>
         </LinkContainer>

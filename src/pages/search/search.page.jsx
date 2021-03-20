@@ -45,7 +45,7 @@ const SearchPage = ({ currentUser }) => {
     }, collectionInfo);
   };
 
-  const handleClick = () => {
+  const handleClick_addFriend = () => {
     const friendRequestInfo = {
       currentUserId: currentUser.uid,
       targetUserId: searchResult.userData[0].uid,
@@ -69,13 +69,13 @@ const SearchPage = ({ currentUser }) => {
       {searchResult.userData.length > 0 ? (
         <div>
           {searchResult.userData.map(({ uid, ...otherProps }) => (
-            <FriendCard key={uid} {...otherProps} />
+            <FriendCard key={uid} buttonFunction={"Detail"} {...otherProps} />
           ))}
           <Button
             variant="outline-success"
             size="md"
             block
-            onClick={handleClick}
+            onClick={handleClick_addFriend}
           >
             Add friend
           </Button>
