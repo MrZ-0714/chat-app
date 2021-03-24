@@ -36,6 +36,10 @@ const FriendsPage = (currentUser) => {
         console.log("Error getting friend data from firestore.");
       }
     }, queryInfo);
+
+    console.log("fetch from express server");
+    const res = fetch("/api/hey");
+    console.log(res);
   }, [currentUser]);
 
   return (
