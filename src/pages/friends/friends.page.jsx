@@ -38,9 +38,7 @@ const FriendsPage = (currentUser) => {
     }, queryInfo);
 
     console.log("fetch from express server");
-    fetch("/api/hey")
-      .then((res) => console.log(res.body()))
-      .then((res) => console.log(res));
+    fetch("/api/hey");
   }, [currentUser]);
 
   return (
