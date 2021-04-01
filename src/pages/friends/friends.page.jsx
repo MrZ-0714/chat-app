@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+
 import "./friends.styles.scss";
 
 import { getCollectionData } from "../../firebase/firebase.utils";
@@ -36,9 +37,6 @@ const FriendsPage = (currentUser) => {
         console.log("Error getting friend data from firestore.");
       }
     }, queryInfo);
-
-    console.log("fetch from express server");
-    fetch("/api/hey");
   }, [currentUser]);
 
   return (
