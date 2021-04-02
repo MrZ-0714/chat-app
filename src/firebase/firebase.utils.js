@@ -7,10 +7,9 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import "firebase/firebase-messaging";
-
+//firebase configurations
 import { firebaseConfig, vapidKey } from "./firebase.config";
 // Initialize Firebase
-
 firebase.initializeApp(firebaseConfig);
 
 export const auth = firebase.auth();
@@ -38,41 +37,24 @@ const getServerTimeStamp = () => {
   return new Date();
 };
 
-const addRefToArrayOfDoc = (
-  collectionName_1,
-  collectionName_2,
-  docId_1,
-  docId_2,
-  arrayToBeModified,
-  callbackFn
+const addObjectToDocInCollection = (
+  collectionName,
+  docId,
+  fieldName,
+  objKey,
+  objValue
 ) => {
-  const doc_1_Ref = firestore.collection(collectionName_1).doc(docId_1);
-  doc_1_Ref
-    .update({
-      [arrayToBeModified]: firebase.firestore.FieldValue.arrayUnion(
-        firestore.collection(collectionName_2).doc(docId_2)
-      ),
-    })
-    .then(() => {
-      console.log(
-        "Referenced to collection: ",
-        collectionName_2,
-        " doc: ",
-        docId_2,
-        " is added to field (array)",
-        arrayToBeModified,
-        " of collection: ",
-        collectionName_1,
-        " doc: ",
-        docId_1
-      );
-      callbackFn(0);
-    })
-    .catch((err) => {
-      console.log("Error updating document: ", err);
-      callbackFn(1);
-    });
+  const docRef = firestore.collection(collectionName).doc(docId);
+  const docData = {
+    [fieldName]: {
+      [objKey]: objValue,
+    },
+  };
+  docRef
+    .set(docData, { merge: true })
+    .then(() => console.log("DocData added!"));
 };
+
 const addArrayToDoc = (
   collectionName_1,
   collectionName_2,
@@ -88,10 +70,10 @@ const addArrayToDoc = (
     })
     .then(() => {
       console.log(
-        "DocId of collection: ",
-        collectionName_2,
-        " doc: ",
+        "DocId: ",
         docId_2,
+        " in collection: ",
+        collectionName_2,
         " is added to field (array)",
         arrayToBeModified,
         " of collection: ",
@@ -254,23 +236,31 @@ export const createPrivateChatRoom = (
     .then((docRef) => {
       console.log(docRef.id);
       const privateChatRoomId = docRef.id;
-      addRefToArrayOfDoc(
-        "users",
-        "privateChatRooms",
-        currentUserUid,
-        privateChatRoomId,
-        "privateChatRoomList",
-        callbackFn
-      );
-      addRefToArrayOfDoc(
-        "users",
-        "privateChatRooms",
-        targetUserUid,
-        privateChatRoomId,
-        "privateChatRoomList",
-        callbackFn
-      );
+      try {
+        addObjectToDocInCollection(
+          "users",
+          currentUserUid,
+          "privateChatRoomsObj",
+          targetUserUid,
+          privateChatRoomId
+        );
+      } catch (err) {
+        console.log(err);
+      }
+
+      try {
+        addObjectToDocInCollection(
+          "users",
+          targetUserUid,
+          "privateChatRoomsObj",
+          currentUserUid,
+          privateChatRoomId
+        );
+      } catch (err) {
+        console.log(err);
+      }
     });
+  callbackFn(0);
 };
 
 export const getCollectionData = async (callbackFn, queryInfo) => {
@@ -283,9 +273,9 @@ export const getCollectionData = async (callbackFn, queryInfo) => {
       filterValue: null,
     },
     docName = null,
-    getRefInDoc = null,
     fieldName = null,
     idArray = null,
+    // getRefInDoc = null,
   } = queryInfo;
 
   console.log("collectionName: ", collectionName);
@@ -346,36 +336,6 @@ export const getCollectionData = async (callbackFn, queryInfo) => {
 
     callbackFn(dataReturn);
   }
-
-  // if (docName && getRefInDoc) {
-  //   const docRef = collectionDataRef.doc(docName);
-  //   console.log("I am in the db call");
-  //   try {
-  //     const doc = await docRef.get();
-  //     const friendRequestsSentTo = doc.data().friendRequestsSentTo;
-  //     if (!friendRequestsSentTo) {
-  //       callbackFn(10);
-  //     }
-  //     try {
-  //       const friendList = await Promise.all(
-  //         friendRequestsSentTo.map(async (friend) => {
-  //           try {
-  //             const friendRef = await friend.get();
-  //             return { uid: friendRef.id, ...friendRef.data() };
-  //           } catch (err) {
-  //             console.log("There is an err getting frienddata in list", err);
-  //           }
-  //         })
-  //       );
-  //       callbackFn(friendList);
-  //     } catch (err) {
-  //       console.log("There is an error", err);
-  //       callbackFn(10);
-  //     }
-  //   } catch (err) {
-  //     console.log("Error getting current user's data reference", err);
-  //   }
-  // }
 };
 
 export const sendFriendRequest = (callbackFn, friendInfo) => {
@@ -389,14 +349,6 @@ export const sendFriendRequest = (callbackFn, friendInfo) => {
     "friendRequestsSentToList",
     callbackFn
   );
-  // addRefToArrayOfDoc(
-  //   "users",
-  //   "users",
-  //   currentUserId,
-  //   targetUserId,
-  //   "friendRequestsSentTo",
-  //   callbackFn
-  // );
   // modify target user's profile
   addArrayToDoc(
     "users",
@@ -407,3 +359,69 @@ export const sendFriendRequest = (callbackFn, friendInfo) => {
     callbackFn
   );
 };
+
+// const addRefToArrayOfDoc = (
+//   collectionName_1,
+//   collectionName_2,
+//   docId_1,
+//   docId_2,
+//   arrayToBeModified,
+//   callbackFn
+// ) => {
+//   const doc_1_Ref = firestore.collection(collectionName_1).doc(docId_1);
+//   doc_1_Ref
+//     .update({
+//       [arrayToBeModified]: firebase.firestore.FieldValue.arrayUnion(
+//         firestore.collection(collectionName_2).doc(docId_2)
+//       ),
+//     })
+//     .then(() => {
+//       console.log(
+//         "Referenced to collection: ",
+//         collectionName_2,
+//         " doc: ",
+//         docId_2,
+//         " is added to field (array)",
+//         arrayToBeModified,
+//         " of collection: ",
+//         collectionName_1,
+//         " doc: ",
+//         docId_1
+//       );
+//       callbackFn(0);
+//     })
+//     .catch((err) => {
+//       console.log("Error updating document: ", err);
+//       callbackFn(1);
+// };
+//     });
+
+// if (docName && getRefInDoc) {
+//   const docRef = collectionDataRef.doc(docName);
+//   console.log("I am in the db call");
+//   try {
+//     const doc = await docRef.get();
+//     const friendRequestsSentTo = doc.data().friendRequestsSentTo;
+//     if (!friendRequestsSentTo) {
+//       callbackFn(10);
+//     }
+//     try {
+//       const friendList = await Promise.all(
+//         friendRequestsSentTo.map(async (friend) => {
+//           try {
+//             const friendRef = await friend.get();
+//             return { uid: friendRef.id, ...friendRef.data() };
+//           } catch (err) {
+//             console.log("There is an err getting frienddata in list", err);
+//           }
+//         })
+//       );
+//       callbackFn(friendList);
+//     } catch (err) {
+//       console.log("There is an error", err);
+//       callbackFn(10);
+//     }
+//   } catch (err) {
+//     console.log("Error getting current user's data reference", err);
+//   }
+// }

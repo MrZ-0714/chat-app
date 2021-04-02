@@ -32,6 +32,11 @@ const FriendCard = ({
   const buttonClick = () => {
     switch (buttonFunction) {
       case "Chat":
+        createPrivateChatRoom(
+          (res) => console.log(res),
+          currentUserUid,
+          selectedUid
+        );
         checkIfPrivateChatRoomAlreadyExist(
           currentUserUid,
           selectedUid,

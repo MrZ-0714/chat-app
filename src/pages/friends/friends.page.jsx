@@ -12,51 +12,34 @@ const FriendsPage = (currentUser) => {
   });
 
   useEffect(() => {
-    console.log("Got currentUser in FirendsPage", currentUser);
+    console.log("CurrentUser received in FirendsPage", currentUser);
     //config query for firebase call
-    const queryInfo = {
-      collectionName: "users",
-      docName: currentUser.currentUser.uid,
-      getRefInDoc: true,
-    };
 
-    getCollectionData((res) => {
-      if (res === 10) {
-        console.log("No friend return");
-        setFriendList({
-          friendListData: [
-            {
-              displayName: "You don't have friend",
-              email: "Please click the + to add more friends",
-              uid: 0,
-            },
-          ],
-        });
-      } else if (res !== 0) {
-        console.log("I am back to friend page", res);
-        setFriendList({ friendListData: res });
-      } else {
-        console.log("Error getting friend data from firestore.");
-      }
-    }, queryInfo);
-
-    const currentUserInfo = {
-      collectionName: "users",
-      docName: currentUser.currentUser.uid,
-      fieldName: "friendRequestsSentToList",
-    };
-
-    getCollectionData((res) => {
-      console.log("I am in first callback");
-      const getAllUsersInFriendList = {
+    try {
+      const currentUserInfo = {
         collectionName: "users",
-        idArray: res.friendRequestsSentToList,
+        docName: currentUser.currentUser.uid,
+        fieldName: "friendRequestsSentToList",
       };
       getCollectionData((res) => {
-        console.log("I am in second callBack", res);
-        setFriendList({ friendListData: res });
-      }, getAllUsersInFriendList);
-    }, currentUserInfo);
+        console.log("I am in first callback");
+        if (res) {
+          const getAllUsersInFriendList = {
+            collectionName: "users",
+            idArray: res.friendRequestsSentToList,
+          };
+          getCollectionData((res) => {
+            console.log("I am in second callBack", res);
+            setFriendList({ friendListData: res });
+          }, getAllUsersInFriendList);
+        }
+      }, currentUserInfo);
+    } catch (err) {
+      console.log(
+        "ERROR -> FriendsPage -> useEffect -> first getCollectionData ",
+        err
+      );
+    }
   }, [currentUser]);
 
   return (
