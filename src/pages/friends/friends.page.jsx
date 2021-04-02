@@ -12,19 +12,21 @@ const FriendsPage = (currentUser) => {
   });
 
   useEffect(() => {
+    console.log("Got currentUser in FirendsPage", currentUser);
+    //config query for firebase call
     const queryInfo = {
       collectionName: "users",
       docName: currentUser.currentUser.uid,
       getRefInDoc: true,
     };
-    console.log("I just loaded");
-    console.log("Printing currentUser: ", currentUser);
+
     getCollectionData((res) => {
       if (res === 10) {
+        console.log("No friend return");
         setFriendList({
           friendListData: [
             {
-              displayName: "No user found",
+              displayName: "You don't have friend",
               email: "Please click the + to add more friends",
               uid: 0,
             },
@@ -37,6 +39,24 @@ const FriendsPage = (currentUser) => {
         console.log("Error getting friend data from firestore.");
       }
     }, queryInfo);
+
+    const currentUserInfo = {
+      collectionName: "users",
+      docName: currentUser.currentUser.uid,
+      fieldName: "friendRequestsSentToList",
+    };
+
+    getCollectionData((res) => {
+      console.log("I am in first callback");
+      const getAllUsersInFriendList = {
+        collectionName: "users",
+        idArray: res.friendRequestsSentToList,
+      };
+      getCollectionData((res) => {
+        console.log("I am in second callBack", res);
+        setFriendList({ friendListData: res });
+      }, getAllUsersInFriendList);
+    }, currentUserInfo);
   }, [currentUser]);
 
   return (

@@ -73,6 +73,39 @@ const addRefToArrayOfDoc = (
       callbackFn(1);
     });
 };
+const addArrayToDoc = (
+  collectionName_1,
+  collectionName_2,
+  docId_1,
+  docId_2,
+  arrayToBeModified,
+  callbackFn
+) => {
+  const doc_1_Ref = firestore.collection(collectionName_1).doc(docId_1);
+  doc_1_Ref
+    .update({
+      [arrayToBeModified]: firebase.firestore.FieldValue.arrayUnion(docId_2),
+    })
+    .then(() => {
+      console.log(
+        "DocId of collection: ",
+        collectionName_2,
+        " doc: ",
+        docId_2,
+        " is added to field (array)",
+        arrayToBeModified,
+        " of collection: ",
+        collectionName_1,
+        " doc: ",
+        docId_1
+      );
+      callbackFn(0);
+    })
+    .catch((err) => {
+      console.log("Error updating document: ", err);
+      callbackFn(1);
+    });
+};
 
 export const createUserWithEmailAndPassword = async (
   email,
@@ -251,6 +284,8 @@ export const getCollectionData = async (callbackFn, queryInfo) => {
     },
     docName = null,
     getRefInDoc = null,
+    fieldName = null,
+    idArray = null,
   } = queryInfo;
 
   console.log("collectionName: ", collectionName);
@@ -272,6 +307,14 @@ export const getCollectionData = async (callbackFn, queryInfo) => {
     });
   }
 
+  if (fieldName) {
+    const docRef = collectionDataRef.doc(docName);
+    docRef.get().then((doc) => {
+      console.log(doc.data());
+      callbackFn({ uid: doc.id, ...doc.data() });
+    });
+  }
+
   if (filterName && filterValue) {
     collectionDataRef
       .where(filterName, "==", filterValue)
@@ -283,6 +326,25 @@ export const getCollectionData = async (callbackFn, queryInfo) => {
         });
         callbackFn(data);
       });
+  }
+
+  if (idArray) {
+    console.log(idArray);
+    const dataReturn = [];
+    await collectionDataRef
+      .where(firebase.firestore.FieldPath.documentId(), "in", idArray)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          console.log("Should print me 1", doc.id, " => ", doc.data());
+          dataReturn.push({ uid: doc.id, ...doc.data() });
+        });
+      })
+      .catch((error) => {
+        console.log("Error getting documents: ", error);
+      });
+
+    callbackFn(dataReturn);
   }
 
   if (docName && getRefInDoc) {
@@ -319,21 +381,29 @@ export const getCollectionData = async (callbackFn, queryInfo) => {
 export const sendFriendRequest = (callbackFn, friendInfo) => {
   const { currentUserId, targetUserId } = friendInfo;
   // modify current user's profile
-  addRefToArrayOfDoc(
+  addArrayToDoc(
     "users",
     "users",
     currentUserId,
     targetUserId,
-    "friendRequestsSentTo",
+    "friendRequestsSentToList",
     callbackFn
   );
+  // addRefToArrayOfDoc(
+  //   "users",
+  //   "users",
+  //   currentUserId,
+  //   targetUserId,
+  //   "friendRequestsSentTo",
+  //   callbackFn
+  // );
   // modify target user's profile
-  addRefToArrayOfDoc(
+  addArrayToDoc(
     "users",
     "users",
     targetUserId,
     currentUserId,
-    "friendRequestsReceivedFrom",
+    "friendRequestsReceivedFromList",
     callbackFn
   );
 };
