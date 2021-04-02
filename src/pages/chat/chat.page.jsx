@@ -26,7 +26,7 @@ class ChatPage extends React.Component {
       chatMessages: [],
       collectionInfo: {
         collectionName: "chatMessages",
-        messageCount: 15,
+        recordsCount: 15,
       },
     };
 
