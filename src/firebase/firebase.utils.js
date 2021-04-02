@@ -347,35 +347,35 @@ export const getCollectionData = async (callbackFn, queryInfo) => {
     callbackFn(dataReturn);
   }
 
-  if (docName && getRefInDoc) {
-    const docRef = collectionDataRef.doc(docName);
-    console.log("I am in the db call");
-    try {
-      const doc = await docRef.get();
-      const friendRequestsSentTo = doc.data().friendRequestsSentTo;
-      if (!friendRequestsSentTo) {
-        callbackFn(10);
-      }
-      try {
-        const friendList = await Promise.all(
-          friendRequestsSentTo.map(async (friend) => {
-            try {
-              const friendRef = await friend.get();
-              return { uid: friendRef.id, ...friendRef.data() };
-            } catch (err) {
-              console.log("There is an err getting frienddata in list", err);
-            }
-          })
-        );
-        callbackFn(friendList);
-      } catch (err) {
-        console.log("There is an error", err);
-        callbackFn(10);
-      }
-    } catch (err) {
-      console.log("Error getting current user's data reference", err);
-    }
-  }
+  // if (docName && getRefInDoc) {
+  //   const docRef = collectionDataRef.doc(docName);
+  //   console.log("I am in the db call");
+  //   try {
+  //     const doc = await docRef.get();
+  //     const friendRequestsSentTo = doc.data().friendRequestsSentTo;
+  //     if (!friendRequestsSentTo) {
+  //       callbackFn(10);
+  //     }
+  //     try {
+  //       const friendList = await Promise.all(
+  //         friendRequestsSentTo.map(async (friend) => {
+  //           try {
+  //             const friendRef = await friend.get();
+  //             return { uid: friendRef.id, ...friendRef.data() };
+  //           } catch (err) {
+  //             console.log("There is an err getting frienddata in list", err);
+  //           }
+  //         })
+  //       );
+  //       callbackFn(friendList);
+  //     } catch (err) {
+  //       console.log("There is an error", err);
+  //       callbackFn(10);
+  //     }
+  //   } catch (err) {
+  //     console.log("Error getting current user's data reference", err);
+  //   }
+  // }
 };
 
 export const sendFriendRequest = (callbackFn, friendInfo) => {
