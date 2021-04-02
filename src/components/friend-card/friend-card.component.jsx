@@ -7,7 +7,7 @@ import { Button } from "react-bootstrap";
 
 import {
   createPrivateChatRoom,
-  checkIfPrivateChatRoomAlreadyExist,
+  getCollectionData,
 } from "../../firebase/firebase.utils.js";
 
 //Redux
@@ -20,7 +20,11 @@ const FriendCard = ({
   selectedUid,
   buttonFunction,
 }) => {
-  console.log(buttonFunction);
+  const queryInfo = {
+    collectionName: "users",
+    docName: selectedUid,
+    fieldName: "privateChatRoomsObj",
+  };
   const goToPrivateChatRoom = () => {
     console.log("Go to private chat-room");
   };
@@ -32,18 +36,23 @@ const FriendCard = ({
   const buttonClick = () => {
     switch (buttonFunction) {
       case "Chat":
-        createPrivateChatRoom(
-          (res) => console.log(res),
-          currentUserUid,
-          selectedUid
-        );
-        checkIfPrivateChatRoomAlreadyExist(
-          currentUserUid,
-          selectedUid,
-          (res) => {
-            res ? goToPrivateChatRoom() : console.log("Will create new room");
-          }
-        );
+        getCollectionData((res) => {
+          console.log("button click callback");
+          res.privateChatRoomsObj && res.privateChatRoomsObj[currentUserUid]
+            ? goToPrivateChatRoom()
+            : createPrivateChatRoom(
+                (res) => {
+                  if (!res) {
+                    goToPrivateChatRoom();
+                  }
+                  console.log(
+                    "ERROR -> FriendPage -> Friend-Card-Component -> buttonClickFn -> createPrivateChatRoom"
+                  );
+                },
+                currentUserUid,
+                selectedUid
+              );
+        }, queryInfo);
         break;
       case "Detail":
         break;
