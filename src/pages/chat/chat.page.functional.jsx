@@ -18,25 +18,22 @@ import { createStructuredSelector } from "reselect";
 import { selectCurrentUser } from "../../redux/user/user.selectors";
 
 const ChatPage = ({ currentUser }) => {
+  //init states
   const [newMessage, setNewMessage] = useState("");
   const [chatMessages, setChatMessages] = useState(null);
   const [collectionInfo, setCollectionInfo] = useState({
     collectionName: "chatMessages",
     recordsCount: 15,
   });
+  const [autoScroll, setAutoScroll] = useState(true);
 
   const bottomRef = useRef(true);
 
   useEffect(() => {
     getCollectionData((chatData) => {
-      console.log(chatData);
       setChatMessages({ chatData });
     }, collectionInfo);
   }, [currentUser, collectionInfo]);
-
-  useEffect(() => {
-    console.log("check chatMessages", chatMessages);
-  }, [chatMessages]);
 
   const handleChange = (event) => {
     const { value } = event.target;
@@ -60,6 +57,7 @@ const ChatPage = ({ currentUser }) => {
       (res) => {
         if (res) {
           alert("Error sending message");
+          console.log("ERROR -> ChatPage -> sending message");
         } else {
           console.log("Message sent");
         }
@@ -67,17 +65,25 @@ const ChatPage = ({ currentUser }) => {
       currentUser,
       newMessageToAdd
     );
+    setAutoScroll(true);
     setNewMessage("");
   };
 
   const showMoreMessages = () => {
-    console.log(collectionInfo);
-
     setCollectionInfo({
       collectionName: "chatMessages",
       recordsCount: collectionInfo.recordsCount + 5,
     });
+    setAutoScroll(false);
   };
+
+  useEffect(() => {
+    if (autoScroll) {
+      bottomRef.current.scrollIntoView({
+        behavior: "smooth",
+      });
+    }
+  }, [chatMessages, autoScroll]);
 
   return (
     <div className="chat-page">
@@ -98,7 +104,7 @@ const ChatPage = ({ currentUser }) => {
           <ChatMessage key={mId} {...otherProps} />
         ))
       ) : (
-        <div>Loading chatData</div>
+        <div>Loading chat messages from remote server</div>
       )}
       <div ref={bottomRef}></div>
       <div className="send-newMessage-div">
