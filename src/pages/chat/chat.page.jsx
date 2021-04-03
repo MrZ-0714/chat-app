@@ -50,7 +50,7 @@ class ChatPage extends React.Component {
       {
         collectionInfo: {
           collectionName: "chatMessages",
-          messageCount: collectionInfo.messageCount + 5,
+          recordsCount: collectionInfo.recordsCount + 5,
         },
       },
       () => {
