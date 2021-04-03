@@ -10,7 +10,7 @@ import SignIn from "./components/sign-in/sign-in.component";
 
 import SearchPage from "./pages/search/search.page";
 import FriendsPage from "./pages/friends/friends.page";
-import ChatPage from "./pages/chat/chat.page";
+import ChatPage from "./pages/chat/chat.page.functional";
 import LandingPage from "./pages/landing/landing.page";
 
 import { connect } from "react-redux";

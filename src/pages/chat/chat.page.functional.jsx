@@ -19,7 +19,7 @@ import { selectCurrentUser } from "../../redux/user/user.selectors";
 
 const ChatPage = ({ currentUser }) => {
   const [newMessage, setNewMessage] = useState("");
-  const [chatMessages, setChatMessages] = useState([]);
+  const [chatMessages, setChatMessages] = useState(null);
   const [collectionInfo, setCollectionInfo] = useState({
     collectionName: "chatMessages",
     recordsCount: 15,
@@ -28,15 +28,19 @@ const ChatPage = ({ currentUser }) => {
   const bottomRef = useRef(true);
 
   useEffect(() => {
-    getCollectionData(
-      (chatData) => setChatMessages({ chatData }),
-      collectionInfo
-    );
-  }, [currentUser]);
+    getCollectionData((chatData) => {
+      console.log(chatData);
+      setChatMessages({ chatData });
+    }, collectionInfo);
+  }, [currentUser, collectionInfo]);
+
+  useEffect(() => {
+    console.log("check chatMessages", chatMessages);
+  }, [chatMessages]);
 
   const handleChange = (event) => {
     const { value } = event.target;
-    setNewMessage({ value });
+    setNewMessage(value);
   };
 
   const handleSubmit = (event) => {
@@ -69,19 +73,10 @@ const ChatPage = ({ currentUser }) => {
   const showMoreMessages = () => {
     console.log(collectionInfo);
 
-    setCollectionInfo(
-      {
-        collectionName: "chatMessages",
-        recordsCount: collectionInfo.recordsCount + 5,
-      },
-
-      () => {
-        getCollectionData(
-          (chatData) => setChatMessages({ chatData }),
-          collectionInfo
-        );
-      }
-    );
+    setCollectionInfo({
+      collectionName: "chatMessages",
+      recordsCount: collectionInfo.recordsCount + 5,
+    });
   };
 
   return (
@@ -98,9 +93,13 @@ const ChatPage = ({ currentUser }) => {
           show previous messages
         </Button>
       </div>
-      {chatMessages.map(({ mId, ...otherProps }) => (
-        <ChatMessage key={mId} {...otherProps} />
-      ))}
+      {chatMessages ? (
+        chatMessages.chatData.map(({ mId, ...otherProps }) => (
+          <ChatMessage key={mId} {...otherProps} />
+        ))
+      ) : (
+        <div>Loading chatData</div>
+      )}
       <div ref={bottomRef}></div>
       <div className="send-newMessage-div">
         <Form onSubmit={handleSubmit}>
